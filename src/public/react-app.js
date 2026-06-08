@@ -1,4 +1,6 @@
 (function () {
+  if (!window.React || !window.ReactDOM) return;
+
   const { createElement: h, useMemo, useState } = React;
   const root = ReactDOM.createRoot(document.getElementById("app"));
   const props = window.__APP_PROPS__ || {};

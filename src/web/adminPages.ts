@@ -11,12 +11,11 @@ function shell(secret: string, title: string, props: Record<string, unknown>, fa
 <title>${esc(title)} · WestCamp Kids</title>
 <link rel="stylesheet" href="/static/styles.css"></head>
 <body>
-<div id="app"></div>
+<div id="app">${fallback}</div>
 <script>window.__APP_PROPS__=${jsonScript({ secret, ...props })};</script>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="/static/react-app.js"></script>
-<noscript>${fallback}</noscript>
 </body></html>`;
 }
 
