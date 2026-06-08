@@ -47,10 +47,10 @@ function typeCard(c: IntelligenceContent, index: 1 | 2): string {
     <div>
       <h3>${esc(c.title)}</h3>
       <p class="tagline">${esc(c.tagline)}</p>
-      <p>${esc(shortText(c.strengths, index === 1 ? 520 : 360))}</p>
+      <p>${esc(shortText(c.strengths, index === 1 ? 340 : 230))}</p>
       <div class="mini-grid">
-        <div><strong>Суперсила в команді</strong><span>${esc(shortText(c.inCamp, 210))}</span></div>
-        ${index === 1 ? `<div><strong>Зона росту</strong><span>Навчитися використовувати цю сильну сторону в різних ситуаціях: у команді, навчанні та щоденних рішеннях.</span></div>` : ""}
+        <div><strong>Суперсила в команді</strong><span>${esc(shortText(c.inCamp, 145))}</span></div>
+        ${index === 1 ? `<div><strong>Зона росту</strong><span>Переносити сильну сторону у команду, навчання та щоденні рішення.</span></div>` : ""}
       </div>
     </div>
   </article>`;
@@ -59,8 +59,8 @@ function typeCard(c: IntelligenceContent, index: 1 | 2): string {
 function adviceCard(title: string, first: IntelligenceContent, second: IntelligenceContent): string {
   return `<article class="parent-card">
     <h3>${esc(title)}</h3>
-    <div class="advice-row"><strong>${esc(first.title)}</strong><p>${esc(shortText(first.parentAdvice, 330))}</p></div>
-    <div class="advice-row"><strong>${esc(second.title)}</strong><p>${esc(shortText(second.parentAdvice, 330))}</p></div>
+    <div class="advice-row"><strong>${esc(first.title)}</strong><p>${esc(shortText(first.parentAdvice, 220))}</p></div>
+    <div class="advice-row"><strong>${esc(second.title)}</strong><p>${esc(shortText(second.parentAdvice, 220))}</p></div>
   </article>`;
 }
 
@@ -85,7 +85,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     width: 210mm;
     height: 297mm;
     overflow: hidden;
-    padding: 15mm;
+    padding: 13mm;
     page-break-after: always;
     background: ${C.paper};
   }
@@ -96,7 +96,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     justify-content: space-between;
     gap: 8mm;
     color: ${C.navy};
-    margin-bottom: 10mm;
+    margin-bottom: 6mm;
   }
   .logo {
     display: flex;
@@ -118,15 +118,15 @@ export function renderReportHtml(a: TemplateArgs): string {
   .meta { text-align: right; color: ${C.muted}; font-size: 9.5pt; line-height: 1.45; }
   .hero {
     display: grid;
-    grid-template-columns: 78mm 1fr;
-    gap: 11mm;
+    grid-template-columns: 72mm 1fr;
+    gap: 9mm;
     align-items: center;
-    min-height: 158mm;
+    min-height: 148mm;
   }
   .photo-frame {
     position: relative;
-    width: 78mm;
-    height: 102mm;
+    width: 72mm;
+    height: 94mm;
     border-radius: 9mm;
     padding: 3mm;
     background: ${C.panel};
@@ -151,13 +151,13 @@ export function renderReportHtml(a: TemplateArgs): string {
   h1, h2, h3, p { margin-top: 0; }
   h1 {
     color: ${C.navy};
-    font-size: 34pt;
+    font-size: 30pt;
     line-height: 1.04;
     margin-bottom: 5mm;
   }
   h2 {
     color: ${C.navy};
-    font-size: 24pt;
+    font-size: 19.5pt;
     line-height: 1.08;
     margin-bottom: 6mm;
   }
@@ -168,24 +168,24 @@ export function renderReportHtml(a: TemplateArgs): string {
     margin-bottom: 2mm;
   }
   p {
-    font-size: 10.5pt;
-    line-height: 1.48;
-    margin-bottom: 3mm;
+    font-size: 10.8pt;
+    line-height: 1.42;
+    margin-bottom: 2.4mm;
   }
   .quote {
-    margin-top: 9mm;
+    margin-top: 7mm;
     background: ${C.panel};
     border-left: 1.5mm solid ${C.orange};
     border-radius: 4mm;
-    padding: 7mm;
+    padding: 5.5mm;
     box-shadow: 0 5mm 18mm rgba(19, 41, 75, .08);
   }
   .quote-mark { color: ${C.orange}; font-size: 28pt; line-height: .6; font-weight: 900; }
   .signature { color: ${C.green}; font-weight: 800; margin-top: 4mm; }
   .chart-layout {
     display: grid;
-    grid-template-columns: 68mm 1fr;
-    gap: 8mm;
+    grid-template-columns: 1fr;
+    gap: 5mm;
     align-items: start;
   }
   .chart-box, .talent-card, .parent-card, .future-card {
@@ -195,21 +195,25 @@ export function renderReportHtml(a: TemplateArgs): string {
     box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
-    padding: 5mm;
-    min-height: 70mm;
+    width: 72mm;
+    min-height: 50mm;
+    margin: 0 auto;
+    padding: 4mm;
     display: grid;
     place-items: center;
   }
   .chart-box svg { max-width: 100%; height: auto; }
   .talents {
     display: grid;
-    gap: 5mm;
+    gap: 4mm;
   }
   .talent-card {
     display: grid;
-    grid-template-columns: 14mm 1fr;
-    gap: 4mm;
-    padding: 6mm;
+    grid-template-columns: 12mm 1fr;
+    gap: 3.5mm;
+    padding: 4.8mm;
+    max-height: 64mm;
+    overflow: hidden;
   }
   .secondary-talent {
     opacity: .96;
@@ -233,52 +237,55 @@ export function renderReportHtml(a: TemplateArgs): string {
   .mini-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3mm;
-    margin-top: 3mm;
+    gap: 2.5mm;
+    margin-top: 2mm;
   }
   .mini-grid div {
     border-radius: 3mm;
     background: #F1F6F3;
-    padding: 3mm;
+    padding: 2.4mm;
+    overflow: hidden;
   }
   .mini-grid strong, .advice-row strong {
     display: block;
     color: ${C.navy};
-    font-size: 9.5pt;
+    font-size: 9.2pt;
     margin-bottom: 1mm;
   }
   .mini-grid span {
     display: block;
     color: ${C.muted};
-    font-size: 9pt;
-    line-height: 1.35;
+    font-size: 8.8pt;
+    line-height: 1.28;
   }
   .parents-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6mm;
-    margin-top: 7mm;
+    grid-template-columns: 1fr;
+    gap: 4mm;
+    margin-top: 5mm;
   }
   .parent-card {
-    padding: 7mm;
-    min-height: 118mm;
+    padding: 5mm;
+    min-height: 54mm;
+    max-height: 61mm;
+    overflow: hidden;
   }
   .advice-row {
     border-top: .3mm solid ${C.line};
-    padding-top: 4mm;
-    margin-top: 4mm;
+    padding-top: 2.6mm;
+    margin-top: 2.6mm;
   }
   .advice-row p { color: ${C.muted}; }
   .future-card {
     position: absolute;
-    left: 15mm;
-    right: 15mm;
-    bottom: 15mm;
+    left: 13mm;
+    right: 13mm;
+    bottom: 13mm;
     display: grid;
-    grid-template-columns: 1fr 34mm;
-    gap: 6mm;
+    grid-template-columns: 1fr 28mm;
+    gap: 5mm;
     align-items: center;
-    padding: 7mm;
+    padding: 5.5mm;
     background: ${C.navy};
     color: #fff;
   }
@@ -287,12 +294,12 @@ export function renderReportHtml(a: TemplateArgs): string {
   .qr {
     display: grid;
     place-items: center;
-    width: 30mm;
-    height: 30mm;
+    width: 25mm;
+    height: 25mm;
     border-radius: 4mm;
     background: #fff;
     color: ${C.navy};
-    font-size: 8pt;
+    font-size: 7.2pt;
     font-weight: 900;
     text-align: center;
     padding: 3mm;
