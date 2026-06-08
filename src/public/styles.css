@@ -311,6 +311,37 @@ th {
   gap: 16px;
 }
 
+.method-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.method-strip strong,
+.method-strip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.method-strip strong {
+  background: var(--green);
+  color: #fff;
+}
+
+.method-strip span {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-weight: 700;
+}
+
 .info-grid article {
   min-height: 150px;
   background: #fff;

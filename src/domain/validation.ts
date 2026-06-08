@@ -9,7 +9,7 @@ export const reportInputSchema = z
     shift: z.string().trim().min(1).max(40),
     primaryType: typeEnum,
     secondaryType: typeEnum.optional(),
-    example: z.string().trim().min(5).max(800),
+    example: z.string().trim().min(5).max(3500),
     photoPath: z.string().trim().min(1),
   })
   .refine((d) => d.secondaryType !== d.primaryType, {

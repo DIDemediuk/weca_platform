@@ -34,6 +34,11 @@ ${error ? `<div class="error">${esc(error)}</div>` : ""}
 <label>Домінуючий тип 1<select name="primaryType" required>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
 <label>Домінуючий тип 2<select name="secondaryType"><option value="">немає</option>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
 <label class="wide">Живий приклад з табору<textarea name="example" required maxlength="800" rows="4"></textarea></label>
+<label class="wide">Вхідний квест / стартовий вибір<textarea name="questSignal" maxlength="500" rows="3"></textarea></label>
+<label class="wide">МК та поведінка на них<textarea name="workshopNotes" maxlength="700" rows="3"></textarea></label>
+<label class="wide">Спостереження дня 3/6/9<textarea name="observationNotes" maxlength="700" rows="3"></textarea></label>
+<label class="wide">Вечірні рефлексії<textarea name="reflectionNotes" maxlength="600" rows="3"></textarea></label>
+<label class="wide">Фінальна добровільна роль<input name="finalProjectNotes" maxlength="220"></label>
 <label class="wide upload-box">Фото дитини<input type="file" name="photo" accept="image/*" required></label>
 <button class="primary-action wide" type="submit">Згенерувати PDF</button>
 </form></section></main>`;

@@ -76,8 +76,12 @@
           className: "form-grid",
           method: "post",
           action: props.submitUrl,
+          target: "downloadFrame",
           encType: "multipart/form-data",
-          onSubmit: () => setBusy(true),
+          onSubmit: () => {
+            setBusy(true);
+            window.setTimeout(() => window.location.reload(), 45000);
+          },
         },
           h("label", null, "ПІБ дитини", h("input", { name: "childName", required: true, maxLength: 80, placeholder: "Наприклад: Артем Коваль" })),
           h("label", null, "Номер зміни", h("input", { name: "shift", required: true, maxLength: 40, placeholder: "Наприклад: 3" })),
@@ -101,6 +105,45 @@
               placeholder: "Опишіть конкретний момент: що дитина зробила, як поводилась, у чому проявилася її сильна сторона.",
             })
           ),
+          h("label", { className: "wide" }, "Вхідний квест / стартовий вибір",
+            h("textarea", {
+              name: "questSignal",
+              maxLength: 500,
+              rows: 3,
+              placeholder: "Наприклад: обрав зібрати команду, розгадувати шифр, діяти самостійно або рухатися до цілі через гру.",
+            })
+          ),
+          h("label", { className: "wide" }, "МК та поведінка на них",
+            h("textarea", {
+              name: "workshopNotes",
+              maxLength: 700,
+              rows: 3,
+              placeholder: "Не лише куди пішов, а що робив: рахував, збирав руками, презентував, допомагав іншим, фокусувався на формі.",
+            })
+          ),
+          h("label", { className: "wide" }, "Спостереження дня 3/6/9",
+            h("textarea", {
+              name: "observationNotes",
+              maxLength: 700,
+              rows: 3,
+              placeholder: "Вільний час, командні квести, роль у групі: капітан, генератор ідей, підтримка, тихе зосереджене виконання.",
+            })
+          ),
+          h("label", { className: "wide" }, "Вечірні рефлексії та фінальний проєкт",
+            h("textarea", {
+              name: "reflectionNotes",
+              maxLength: 600,
+              rows: 3,
+              placeholder: "Як говорить про емоції, події й висновки. Яку роль добровільно обрав/обрала у фінальному проєкті.",
+            })
+          ),
+          h("label", { className: "wide" }, "Фінальна добровільна роль",
+            h("input", {
+              name: "finalProjectNotes",
+              maxLength: 220,
+              placeholder: "Наприклад: сценарій, декорації, танець, звук, рахунок балів, презентація.",
+            })
+          ),
           h("label", { className: "wide upload-box" }, "Фото дитини",
             h("input", {
               type: "file",
@@ -115,7 +158,15 @@
             photo ? h("img", { className: "photo-preview", src: photo, alt: "Превʼю фото" }) : h("span", null, "JPG або PNG до 12 MB")
           ),
           h("button", { className: "primary-action wide", type: "submit", disabled: busy }, busy ? "Генерується PDF..." : "Згенерувати PDF")
-        )
+        ),
+        h("iframe", {
+          name: "downloadFrame",
+          title: "PDF download",
+          style: { display: "none" },
+          onLoad: () => {
+            if (busy) window.setTimeout(() => window.location.reload(), 700);
+          },
+        })
       ) : h(Guide)
     );
   }
@@ -125,9 +176,19 @@
       h("header", { className: "page-head" },
         h("div", null, h("p", { className: "eyebrow" }, "Підказки"), h("h1", null, "Як заповнювати звіт")),
       ),
+      h("div", { className: "method-strip" },
+        h("strong", null, "Формула точності"),
+        h("span", null, "День 1: ігровий квест"),
+        h("span", null, "3 МК: поведінка, не лише вибір"),
+        h("span", null, "День 3/6/9: 3 швидкі спостереження"),
+        h("span", null, "Фінал: добровільна роль у проєкті")
+      ),
       h("div", { className: "info-grid" },
         h("article", null, h("h3", null, "Конкретний приклад"), h("p", null, "Пишіть одну живу ситуацію з табору: дія, контекст і результат.")),
-        h("article", null, h("h3", null, "Типи інтелекту"), h("p", null, "Перший тип має бути найпомітнішим, другий додавайте лише якщо він справді проявився.")),
+        h("article", null, h("h3", null, "Не плутайте вибір і прояв"), h("p", null, "Дитина може піти на МК за другом або через харизму ментора. Важливіше, що саме вона робила під час заняття.")),
+        h("article", null, h("h3", null, "Комбо-МК"), h("p", null, "Один МК може показати кілька інтелектів: код, форма, рух, презентація, підтримка команди.")),
+        h("article", null, h("h3", null, "Без оцінювання"), h("p", null, "Не фіксуйте невдачу як слабкість. Дивіться, чи дитина пробує, як реагує, чи повертається до задачі.")),
+        h("article", null, h("h3", null, "Вечірні тички"), h("p", null, "Рефлексії добре показують внутрішньоособистісний, лінгвістичний і логічний прояви.")),
         h("article", null, h("h3", null, "Фото"), h("p", null, "Краще працює світле вертикальне фото, де обличчя добре видно."))
       )
     );
