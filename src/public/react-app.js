@@ -116,7 +116,7 @@
           ),
           h("button", { className: "primary-action wide", type: "submit", disabled: busy }, busy ? "Генерується PDF..." : "Згенерувати PDF")
         )
-      ) : h(Guide))
+      ) : h(Guide)
     );
   }
 
