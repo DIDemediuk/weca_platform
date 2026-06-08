@@ -19,7 +19,7 @@ describe("form routes", () => {
     const app = buildServer(cfg);
     const res = await app.inject({ method: "GET", url: "/f/S" });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toContain("Звіт про дитину");
+    expect(res.body).toContain("Новий звіт");
     await app.close();
   });
 

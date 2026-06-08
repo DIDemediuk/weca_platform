@@ -11,30 +11,38 @@ const TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: "naturalistic", label: "Натуралістичний" },
 ];
 
-function options(includeEmpty: boolean): string {
-  const empty = includeEmpty ? `<option value="">— немає —</option>` : "";
-  return empty + TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("");
+function jsonScript(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
 export function formPage(secret: string, error?: string): string {
+  const props = {
+    page: "form",
+    secret,
+    error,
+    types: TYPE_OPTIONS,
+    submitUrl: `/f/${secret}`,
+  };
+
   return `<!doctype html><html lang="uk"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Звіт про дитину · WestCamp Kids</title>
+<title>Новий звіт · WestCamp Kids</title>
 <link rel="stylesheet" href="/static/styles.css"></head><body>
-<main class="card">
-  <h1>Звіт про дитину</h1>
-  <p class="lead">Заповніть кілька полів — система згенерує гарний PDF.</p>
-  ${error ? `<div class="error">${esc(error)}</div>` : ""}
-  <form method="post" action="/f/${esc(secret)}" enctype="multipart/form-data">
-    <label>ПІБ дитини<input name="childName" required maxlength="80"></label>
-    <label>Номер зміни<input name="shift" required maxlength="40"></label>
-    <label>Домінуючий тип 1<select name="primaryType" required>${options(false)}</select></label>
-    <label>Домінуючий тип 2 (необов'язково)<select name="secondaryType">${options(true)}</select></label>
-    <label>Живий приклад з табору
-      <textarea name="example" required maxlength="800" rows="4"
-        placeholder="Артем неймовірно проявив себе на 5-й день, коли взяв капітанство у квесті…"></textarea></label>
-    <label>Фото дитини<input type="file" name="photo" accept="image/*" required></label>
-    <button type="submit">Згенерувати PDF</button>
-  </form>
-</main></body></html>`;
+<div id="app"></div>
+<script>window.__APP_PROPS__=${jsonScript(props)};</script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="/static/react-app.js"></script>
+<noscript><main class="app-shell"><section class="panel"><h1>Новий звіт</h1>
+${error ? `<div class="error">${esc(error)}</div>` : ""}
+<form method="post" action="/f/${esc(secret)}" enctype="multipart/form-data">
+<label>ПІБ дитини<input name="childName" required maxlength="80"></label>
+<label>Номер зміни<input name="shift" required maxlength="40"></label>
+<label>Домінуючий тип 1<select name="primaryType" required>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
+<label>Домінуючий тип 2<select name="secondaryType"><option value="">немає</option>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
+<label>Живий приклад з табору<textarea name="example" required maxlength="800" rows="4"></textarea></label>
+<label>Фото дитини<input type="file" name="photo" accept="image/*" required></label>
+<button type="submit">Згенерувати PDF</button>
+</form></section></main></noscript>
+</body></html>`;
 }
