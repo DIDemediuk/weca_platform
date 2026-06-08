@@ -32,7 +32,7 @@
     return h("main", { className: "app-shell" },
       h("aside", { className: "sidebar" },
         h("div", { className: "brand" },
-          h("span", { className: "brand-mark" }, "W"),
+          h("img", { className: "brand-logo", src: "/static/brand/westcamp-kids-logo.png", alt: "WestCamp Kids" }),
           h("div", null,
             h("strong", null, "WestCamp Kids"),
             h("small", null, "Gardner reports")

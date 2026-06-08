@@ -24,7 +24,7 @@ export function formPage(secret: string, error?: string): string {
     submitUrl: `/f/${secret}`,
   };
   const fallback = `<main class="app-shell"><aside class="sidebar">
-<div class="brand"><span class="brand-mark">W</span><div><strong>WestCamp Kids</strong><small>Gardner reports</small></div></div>
+<div class="brand"><img class="brand-logo" src="/static/brand/westcamp-kids-logo.png" alt="WestCamp Kids"><div><strong>WestCamp Kids</strong><small>Gardner reports</small></div></div>
 <nav class="tabs"><button class="tab active" type="button">Новий звіт</button><button class="tab" type="button">Підказки</button></nav>
 </aside><section class="workspace"><header class="page-head"><div><p class="eyebrow">Форма тім-лідера</p><h1>Новий звіт</h1></div></header>
 ${error ? `<div class="error">${esc(error)}</div>` : ""}

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { esc } from "../web/html.js";
 import type { IntelligenceContent, Report } from "../domain/types.js";
 
@@ -19,6 +20,10 @@ const C = {
   muted: "#667085",
   line: "#DDE5E0",
 };
+
+const LOGO_SRC = `data:image/png;base64,${readFileSync(
+  new URL("../public/brand/westcamp-kids-logo.png", import.meta.url)
+).toString("base64")}`;
 
 function formatDate(iso: string): string {
   const date = new Date(iso);
@@ -101,19 +106,15 @@ export function renderReportHtml(a: TemplateArgs): string {
   .logo {
     display: flex;
     align-items: center;
-    gap: 3mm;
     font-weight: 900;
     font-size: 13pt;
   }
-  .logo-mark {
-    display: inline-grid;
-    place-items: center;
-    width: 11mm;
-    height: 11mm;
-    border-radius: 3mm;
-    background: ${C.orange};
-    color: #fff;
-    font-weight: 900;
+  .logo-img {
+    display: block;
+    width: 43mm;
+    height: auto;
+    max-height: 15mm;
+    object-fit: contain;
   }
   .meta { text-align: right; color: ${C.muted}; font-size: 9.5pt; line-height: 1.45; }
   .hero {
@@ -315,7 +316,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 
 <section class="page">
   <header class="header">
-    <div class="logo"><span class="logo-mark">W</span><span>WestCamp Kids</span></div>
+    <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta"><strong>${esc(shiftName)}</strong><br>${esc(date)}</div>
   </header>
   <div class="hero">
@@ -336,7 +337,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 
 <section class="page">
   <header class="header">
-    <div class="logo"><span class="logo-mark">W</span><span>WestCamp Kids</span></div>
+    <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">${esc(shiftName)}</div>
   </header>
   <h2>Множинний інтелект за методикою Говарда Гарднера</h2>
@@ -351,7 +352,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 
 <section class="page">
   <header class="header">
-    <div class="logo"><span class="logo-mark">W</span><span>WestCamp Kids</span></div>
+    <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">Для батьків</div>
   </header>
   <h2>Як взаємодіяти вдома</h2>
