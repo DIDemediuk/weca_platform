@@ -5,6 +5,7 @@ import { renderRadarSvg } from "./radar.js";
 import { renderReportHtml } from "./reportTemplate.js";
 import { weaveExample, type WeaveArgs } from "./ai.js";
 import { renderPdf } from "./pdf.js";
+import { imageFileToDataUri } from "./imageSrc.js";
 import type { Report, IntelligenceType } from "../domain/types.js";
 import type { ReportInputParsed } from "../domain/validation.js";
 
@@ -15,7 +16,7 @@ export interface BuildDeps {
   render?: (html: string) => Promise<Buffer>;
   idGen?: () => string;
   now?: () => Date;
-  photoToSrc?: (photoPath: string) => string;
+  photoToSrc?: (photoPath: string) => string | Promise<string>;
 }
 
 export interface BuildResult {
@@ -28,7 +29,7 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
   const render = deps.render ?? renderPdf;
   const idGen = deps.idGen ?? (() => Math.random().toString(36).slice(2, 10));
   const now = deps.now ?? (() => new Date());
-  const photoToSrc = deps.photoToSrc ?? ((p) => p);
+  const photoToSrc = deps.photoToSrc ?? imageFileToDataUri;
 
   const primary = getIntelligence(deps.db, input.primaryType);
   const secondary = input.secondaryType
@@ -58,8 +59,9 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
 
   const highlighted = [input.primaryType, input.secondaryType].filter(Boolean) as IntelligenceType[];
   const radarSvg = renderRadarSvg(highlighted);
+  const photoSrc = await photoToSrc(report.photoPath);
   const html = renderReportHtml({
-    report: { ...report, photoPath: photoToSrc(report.photoPath) },
+    report: { ...report, photoPath: photoSrc },
     primary,
     secondary,
     radarSvg,

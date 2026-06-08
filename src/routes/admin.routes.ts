@@ -1,13 +1,12 @@
 import type { FastifyInstance } from "fastify";
 import formbody from "@fastify/formbody";
-import { readFile } from "node:fs/promises";
-import { pathToFileURL } from "node:url";
 import { adminListPage, adminContentPage } from "../web/adminPages.js";
 import { listReports, getReport } from "../db/reports.repo.js";
 import { listIntelligences, getIntelligence, updateIntelligence } from "../db/intelligences.repo.js";
 import { renderRadarSvg } from "../services/radar.js";
 import { renderReportHtml } from "../services/reportTemplate.js";
 import { renderPdf } from "../services/pdf.js";
+import { imageFileToDataUri } from "../services/imageSrc.js";
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 
 export async function adminRoutes(app: FastifyInstance) {
@@ -50,8 +49,7 @@ export async function adminRoutes(app: FastifyInstance) {
       const primary = getIntelligence(db, report.primaryType);
       const secondary = report.secondaryType ? getIntelligence(db, report.secondaryType) : undefined;
       const highlighted = [report.primaryType, report.secondaryType].filter(Boolean) as IntelligenceType[];
-      let photoSrc = report.photoPath;
-      try { await readFile(report.photoPath); photoSrc = pathToFileURL(report.photoPath).href; } catch { /* keep as-is */ }
+      const photoSrc = await imageFileToDataUri(report.photoPath);
       const html = renderReportHtml({
         report: { ...report, photoPath: photoSrc },
         primary, secondary, radarSvg: renderRadarSvg(highlighted),

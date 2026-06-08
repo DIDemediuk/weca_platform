@@ -3,7 +3,6 @@ import { randomUUID } from "node:crypto";
 import { mkdirSync, createWriteStream } from "node:fs";
 import { join, extname } from "node:path";
 import { pipeline } from "node:stream/promises";
-import { pathToFileURL } from "node:url";
 import { formPage } from "../web/formPage.js";
 import { reportInputSchema } from "../domain/validation.js";
 import { buildReport } from "../services/reportBuilder.js";
@@ -56,7 +55,6 @@ export async function formRoutes(app: FastifyInstance) {
     const { report, pdf } = await buildReport(parsed.data, {
       db,
       deepseekApiKey: cfg.deepseekApiKey,
-      photoToSrc: (p) => pathToFileURL(p).href,
     });
 
     const filename = `zvit-${report.childName}-zmina-${report.shift}.pdf`.replace(/\s+/g, "_");
