@@ -52,9 +52,9 @@ function typeCard(c: IntelligenceContent, index: 1 | 2): string {
     <div>
       <h3>${esc(c.title)}</h3>
       <p class="tagline">${esc(c.tagline)}</p>
-      <p>${esc(shortText(c.strengths, index === 1 ? 340 : 230))}</p>
+      <p>${esc(shortText(c.strengths, index === 1 ? 380 : 300))}</p>
       <div class="mini-grid">
-        <div><strong>Суперсила в команді</strong><span>${esc(shortText(c.inCamp, 145))}</span></div>
+        <div><strong>Суперсила в команді</strong><span>${esc(shortText(c.inCamp, index === 1 ? 190 : 175))}</span></div>
         ${index === 1 ? `<div><strong>Зона росту</strong><span>Переносити сильну сторону у команду, навчання та щоденні рішення.</span></div>` : ""}
       </div>
     </div>
@@ -186,7 +186,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5mm;
+    gap: 4mm;
     align-items: start;
   }
   .chart-box, .talent-card, .parent-card, .future-card {
@@ -196,10 +196,10 @@ export function renderReportHtml(a: TemplateArgs): string {
     box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
-    width: 86mm;
-    min-height: 68mm;
+    width: 104mm;
+    min-height: 82mm;
     margin: 0 auto;
-    padding: 4mm;
+    padding: 5mm;
     display: grid;
     place-items: center;
   }
@@ -212,8 +212,9 @@ export function renderReportHtml(a: TemplateArgs): string {
     display: grid;
     grid-template-columns: 12mm 1fr;
     gap: 3.5mm;
-    padding: 4mm;
-    max-height: 58mm;
+    padding: 4.6mm;
+    min-height: 66mm;
+    max-height: 72mm;
     overflow: hidden;
   }
   .secondary-talent {
@@ -312,6 +313,13 @@ export function renderReportHtml(a: TemplateArgs): string {
     color: ${C.muted};
     font-size: 8.5pt;
   }
+  .analytics-page .header {
+    margin-bottom: 4mm;
+  }
+  .analytics-page h2 {
+    font-size: 18pt;
+    margin-bottom: 4mm;
+  }
 </style></head><body>
 
 <section class="page">
@@ -335,7 +343,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   <div class="footer-label">Adventure · Education · Safety</div>
 </section>
 
-<section class="page">
+<section class="page analytics-page">
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">${esc(shiftName)}</div>
