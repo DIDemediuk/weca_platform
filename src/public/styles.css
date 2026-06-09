@@ -385,6 +385,10 @@ th {
   color: var(--muted);
 }
 
+.guide-examples {
+  margin-top: 16px;
+}
+
 @media (max-width: 860px) {
   .app-shell {
     grid-template-columns: 1fr;

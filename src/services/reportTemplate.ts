@@ -210,8 +210,8 @@ export function renderReportHtml(a: TemplateArgs): string {
     display: grid;
     grid-template-columns: 12mm 1fr;
     gap: 3.5mm;
-    padding: 3.6mm;
-    max-height: 55mm;
+    padding: 4mm;
+    max-height: 64mm;
     overflow: hidden;
   }
   .talent-card h3 {
@@ -246,7 +246,9 @@ export function renderReportHtml(a: TemplateArgs): string {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2mm;
-    margin-top: 1.5mm;
+    margin-top: 2.8mm;
+    padding-top: 2.4mm;
+    border-top: .3mm solid ${C.line};
   }
   .mini-grid div {
     border-radius: 3mm;

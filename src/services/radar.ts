@@ -45,10 +45,11 @@ function makeLabel(lx: number, ly: number, cx: number, lines: [string, string?],
 }
 
 export function renderRadarSvg(highlighted: IntelligenceType[]): string {
-  const size = 640;
-  const cx = size / 2;
-  const cy = size / 2;
-  const rMax = 135;
+  const width = 640;
+  const height = 500;
+  const cx = width / 2;
+  const cy = height / 2;
+  const rMax = 130;
   const n = INTELLIGENCE_TYPES.length;
   const baseLevel = 0.45;
   const hiLevel = 1.0;
@@ -101,7 +102,7 @@ export function renderRadarSvg(highlighted: IntelligenceType[]): string {
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg"` +
-    ` width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
+    ` width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
     rings + spokes + polygon + dots + labels +
     `<circle cx="${cx}" cy="${cy}" r="2.5" fill="${MUTED}"/>` +
     `</svg>`
