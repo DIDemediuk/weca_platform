@@ -196,24 +196,24 @@ export function renderReportHtml(a: TemplateArgs): string {
     box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
-    width: 72mm;
-    min-height: 50mm;
+    width: 86mm;
+    min-height: 68mm;
     margin: 0 auto;
     padding: 4mm;
     display: grid;
     place-items: center;
   }
-  .chart-box svg { max-width: 100%; height: auto; }
+  .chart-box svg { width: 100%; height: auto; display: block; }
   .talents {
     display: grid;
-    gap: 4mm;
+    gap: 3mm;
   }
   .talent-card {
     display: grid;
     grid-template-columns: 12mm 1fr;
     gap: 3.5mm;
-    padding: 4.8mm;
-    max-height: 64mm;
+    padding: 4mm;
+    max-height: 58mm;
     overflow: hidden;
   }
   .secondary-talent {

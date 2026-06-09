@@ -1,14 +1,14 @@
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 
-const SHORT_LABELS: Record<IntelligenceType, string> = {
-  linguistic: "Лінгвіст",
-  logical: "Логіко",
-  spatial: "Простор",
-  kinesthetic: "Кінест",
-  musical: "Музич",
-  interpersonal: "Міжособ",
-  intrapersonal: "Внутріш",
-  naturalistic: "Натурал",
+const SHORT_LABELS: Record<IntelligenceType, [string, string]> = {
+  linguistic: ["Лінгв.", "слово"],
+  logical: ["Логіко", "матем."],
+  spatial: ["Простор.", "образи"],
+  kinesthetic: ["Тілесно", "руховий"],
+  musical: ["Музич.", "ритм"],
+  interpersonal: ["Міжособ.", "команда"],
+  intrapersonal: ["Внутріш.", "рефлексія"],
+  naturalistic: ["Натурал.", "природа"],
 };
 
 const ACCENT = "#1FB6A6";
@@ -16,10 +16,10 @@ const MUTED = "#C9D6CC";
 const GRID = "#D8E0D6";
 
 export function renderRadarSvg(highlighted: IntelligenceType[]): string {
-  const size = 420;
+  const size = 480;
   const cx = size / 2;
   const cy = size / 2;
-  const rMax = 150;
+  const rMax = 140;
   const n = INTELLIGENCE_TYPES.length;
   const baseLevel = 0.45; // non-highlighted reach
   const hiLevel = 1.0;
@@ -42,10 +42,12 @@ export function renderRadarSvg(highlighted: IntelligenceType[]): string {
   INTELLIGENCE_TYPES.forEach((type, i) => {
     const [x, y] = point(i, 1);
     spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${GRID}" stroke-width="1"/>`;
-    const [lx, ly] = point(i, 1.16);
-    const anchor = Math.abs(lx - cx) < 4 ? "middle" : lx > cx ? "start" : "end";
+    const [lx, ly] = point(i, 1.42);
+    const anchor = Math.abs(lx - cx) < 8 ? "middle" : lx > cx ? "start" : "end";
     const isHi = highlighted.includes(type);
-    labels += `<text x="${lx}" y="${ly}" font-size="12" text-anchor="${anchor}" dominant-baseline="middle" fill="${isHi ? ACCENT : "#6B7A6E"}" font-weight="${isHi ? 700 : 400}">${SHORT_LABELS[type]}</text>`;
+    const [line1, line2] = SHORT_LABELS[type];
+    labels += `<text x="${lx}" y="${ly - 7}" font-size="12" text-anchor="${anchor}" dominant-baseline="middle" fill="${isHi ? ACCENT : "#6B7A6E"}" font-weight="${isHi ? 700 : 500}">${line1}</text>`;
+    labels += `<text x="${lx}" y="${ly + 7}" font-size="10" text-anchor="${anchor}" dominant-baseline="middle" fill="${isHi ? ACCENT : "#6B7A6E"}" font-weight="${isHi ? 700 : 400}">${line2}</text>`;
   });
   // data polygon
   const dataPts = INTELLIGENCE_TYPES.map((type, i) =>
