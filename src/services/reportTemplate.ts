@@ -292,7 +292,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     right: 13mm;
     bottom: 13mm;
     display: grid;
-    grid-template-columns: 1fr 28mm;
+    grid-template-columns: 1fr 46mm;
     gap: 5mm;
     align-items: center;
     padding: 5.5mm;
@@ -301,18 +301,28 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
   .future-card h3 { color: #fff; margin-bottom: 2mm; }
   .future-card p { color: rgba(255,255,255,.82); margin-bottom: 0; }
-  .qr {
+  .contact-card {
     display: grid;
-    place-items: center;
-    width: 25mm;
-    height: 25mm;
+    gap: 1.5mm;
     border-radius: 4mm;
     background: #fff;
     color: ${C.navy};
-    font-size: 7.2pt;
+    font-size: 8.2pt;
     font-weight: 900;
-    text-align: center;
-    padding: 3mm;
+    padding: 4mm;
+  }
+  .contact-card span {
+    display: block;
+    color: ${C.muted};
+    font-size: 7.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .contact-card strong {
+    display: block;
+    color: ${C.navy};
+    font-size: 9pt;
+    line-height: 1.2;
   }
   .footer-label {
     position: absolute;
@@ -380,9 +390,14 @@ export function renderReportHtml(a: TemplateArgs): string {
   <div class="future-card">
     <div>
       <h3>Наступна сходинка розвитку</h3>
-      <p>Прокачка лідерських навичок на нашій майбутній зміні. Чекаємо вас знову!</p>
+      <p>Якщо цей звіт допоміг краще побачити сильні сторони дитини, будемо раді продовжити розвиток на наступних програмах WestCamp Kids.</p>
     </div>
-    <div class="qr">LTV<br>Offer<br>Link</div>
+    <div class="contact-card">
+      <span>Контакти</span>
+      <strong>+38 (093) 092-88-80</strong>
+      <span>Сайт</span>
+      <strong>kids.westcamp.in.ua</strong>
+    </div>
   </div>
 </section>
 
