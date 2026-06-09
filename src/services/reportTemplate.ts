@@ -196,14 +196,14 @@ export function renderReportHtml(a: TemplateArgs): string {
     box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
-    width: 104mm;
-    min-height: 82mm;
+    width: 126mm;
+    min-height: 92mm;
     margin: 0 auto;
     padding: 5mm;
     display: grid;
     place-items: center;
   }
-  .chart-box svg { width: 100%; height: auto; display: block; }
+  .chart-box svg { width: 104mm; max-width: 100%; height: auto; display: block; }
   .talents {
     display: grid;
     gap: 3mm;
