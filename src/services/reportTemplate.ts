@@ -186,7 +186,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 4mm;
+    gap: 3mm;
     align-items: start;
   }
   .chart-box, .talent-card, .parent-card, .future-card {
@@ -196,24 +196,32 @@ export function renderReportHtml(a: TemplateArgs): string {
     box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
-    width: 130mm;
+    width: 124mm;
     margin: 0 auto;
-    padding: 3mm;
+    padding: 2mm;
     overflow: hidden;
   }
-  .chart-box svg { width: 124mm; height: auto; display: block; }
+  .chart-box svg { width: 112mm; height: auto; display: block; margin: 0 auto; }
   .talents {
     display: grid;
-    gap: 3mm;
+    gap: 2.5mm;
   }
   .talent-card {
     display: grid;
     grid-template-columns: 12mm 1fr;
     gap: 3.5mm;
-    padding: 4.6mm;
-    min-height: 66mm;
-    max-height: 72mm;
+    padding: 3.6mm;
+    max-height: 55mm;
     overflow: hidden;
+  }
+  .talent-card h3 {
+    font-size: 14pt;
+    margin-bottom: 1mm;
+  }
+  .talent-card p {
+    font-size: 10.2pt;
+    line-height: 1.32;
+    margin-bottom: 1.8mm;
   }
   .secondary-talent {
     opacity: .96;
@@ -237,26 +245,26 @@ export function renderReportHtml(a: TemplateArgs): string {
   .mini-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2.5mm;
-    margin-top: 2mm;
+    gap: 2mm;
+    margin-top: 1.5mm;
   }
   .mini-grid div {
     border-radius: 3mm;
     background: #F1F6F3;
-    padding: 2.4mm;
+    padding: 2mm;
     overflow: hidden;
   }
   .mini-grid strong, .advice-row strong {
     display: block;
     color: ${C.navy};
-    font-size: 9.2pt;
+    font-size: 8.8pt;
     margin-bottom: 1mm;
   }
   .mini-grid span {
     display: block;
     color: ${C.muted};
-    font-size: 8.8pt;
-    line-height: 1.28;
+    font-size: 8.4pt;
+    line-height: 1.22;
   }
   .parents-grid {
     display: grid;
@@ -312,11 +320,11 @@ export function renderReportHtml(a: TemplateArgs): string {
     font-size: 8.5pt;
   }
   .analytics-page .header {
-    margin-bottom: 4mm;
+    margin-bottom: 2mm;
   }
   .analytics-page h2 {
-    font-size: 18pt;
-    margin-bottom: 4mm;
+    font-size: 16pt;
+    margin-bottom: 2.5mm;
   }
 </style></head><body>
 
