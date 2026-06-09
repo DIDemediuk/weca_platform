@@ -199,9 +199,9 @@ export function renderReportHtml(a: TemplateArgs): string {
     width: 130mm;
     margin: 0 auto;
     padding: 3mm;
-    overflow: visible;
+    overflow: hidden;
   }
-  .chart-box svg { width: 124mm; height: auto; display: block; overflow: visible; }
+  .chart-box svg { width: 124mm; height: auto; display: block; }
   .talents {
     display: grid;
     gap: 3mm;

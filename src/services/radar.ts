@@ -21,11 +21,10 @@ const FS = 12;    // font-size for single-line labels (px in SVG coordinates)
 const FS2 = 11;   // font-size for two-line labels
 const LH = 14;   // line-height spacing for two-line (px)
 
-function makeLabel(lx: number, ly: number, lines: [string, string?], isHi: boolean): string {
+function makeLabel(lx: number, ly: number, cx: number, lines: [string, string?], isHi: boolean): string {
   const color = isHi ? ACCENT : "#8A9E94";
   const weight = isHi ? "800" : "500";
-  // Determine text-anchor from horizontal position relative to centre (cx=260)
-  const dx = lx - 260;
+  const dx = lx - cx;
   const anchor = Math.abs(dx) < 30 ? "middle" : dx > 0 ? "start" : "end";
 
   if (lines[1]) {
@@ -46,9 +45,9 @@ function makeLabel(lx: number, ly: number, lines: [string, string?], isHi: boole
 }
 
 export function renderRadarSvg(highlighted: IntelligenceType[]): string {
-  const size = 520;
-  const cx = size / 2;  // 260
-  const cy = size / 2;  // 260
+  const size = 640;
+  const cx = size / 2;
+  const cy = size / 2;
   const rMax = 135;
   const n = INTELLIGENCE_TYPES.length;
   const baseLevel = 0.45;
@@ -95,14 +94,14 @@ export function renderRadarSvg(highlighted: IntelligenceType[]): string {
     // Small circle at axis tip
     const [tx, ty] = point(i, 1);
     labels += `<circle cx="${tx}" cy="${ty}" r="3.5" fill="${isHi ? ACCENT : MUTED}" stroke="${isHi ? ACCENT : GRID}" stroke-width="1"/>`;
-    // Full-name label at radius 1.55
-    const [lx, ly] = point(i, 1.55);
-    labels += makeLabel(lx, ly, LABELS[i], isHi);
+    // Full-name label, kept inside the SVG safe area.
+    const [lx, ly] = point(i, 1.52);
+    labels += makeLabel(lx, ly, cx, LABELS[i], isHi);
   });
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg"` +
-    ` width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" overflow="visible">` +
+    ` width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">` +
     rings + spokes + polygon + dots + labels +
     `<circle cx="${cx}" cy="${cy}" r="2.5" fill="${MUTED}"/>` +
     `</svg>`
