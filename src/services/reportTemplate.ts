@@ -303,26 +303,27 @@ export function renderReportHtml(a: TemplateArgs): string {
   .future-card p { color: rgba(255,255,255,.82); margin-bottom: 0; }
   .contact-card {
     display: grid;
-    gap: 1.5mm;
+    justify-items: center;
+    gap: 1.8mm;
     border-radius: 4mm;
     background: #fff;
     color: ${C.navy};
-    font-size: 8.2pt;
+    font-size: 8.4pt;
     font-weight: 900;
     padding: 4mm;
+    text-align: center;
   }
-  .contact-card span {
+  .contact-logo {
     display: block;
-    color: ${C.muted};
-    font-size: 7.5pt;
-    font-weight: 800;
-    text-transform: uppercase;
+    width: 22mm;
+    height: auto;
+    margin-bottom: .5mm;
   }
   .contact-card strong {
     display: block;
     color: ${C.navy};
-    font-size: 9pt;
-    line-height: 1.2;
+    font-size: 8.6pt;
+    line-height: 1.18;
   }
   .footer-label {
     position: absolute;
@@ -390,12 +391,11 @@ export function renderReportHtml(a: TemplateArgs): string {
   <div class="future-card">
     <div>
       <h3>Наступна сходинка розвитку</h3>
-      <p>Якщо цей звіт допоміг краще побачити сильні сторони дитини, будемо раді продовжити розвиток на наступних програмах WestCamp Kids.</p>
+      <p>Наступна сходинка розвитку — прокачка лідерських навичок на нашій майбутній зміні. Чекаємо вас знову!</p>
     </div>
     <div class="contact-card">
-      <span>Контакти</span>
+      <img class="contact-logo" src="${LOGO_SRC}" alt="WestCamp Kids">
       <strong>+38 (093) 092-88-80</strong>
-      <span>Сайт</span>
       <strong>kids.westcamp.in.ua</strong>
     </div>
   </div>
