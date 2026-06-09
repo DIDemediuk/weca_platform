@@ -7,9 +7,9 @@ describe("renderRadarSvg", () => {
     expect(svg.startsWith("<svg")).toBe(true);
     expect(svg).toContain("</svg>");
   });
-  it("includes all 8 axis labels", () => {
+  it("includes all 8 intelligence type labels", () => {
     const svg = renderRadarSvg(["musical", "spatial"]);
-    for (const label of ["Лінгв.", "Логіко", "Простор.", "Тілесно", "Музич.", "Міжособ.", "Внутріш.", "Натурал."]) {
+    for (const label of ["Лінгвістичний", "Просторовий", "Музичний", "Натуралістичний"]) {
       expect(svg).toContain(label);
     }
   });
