@@ -391,7 +391,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   <div class="future-card">
     <div>
       <h3>Наступна сходинка розвитку</h3>
-      <p>Наступна сходинка розвитку — прокачка лідерських навичок на нашій майбутній зміні. Чекаємо вас знову!</p>
+      <p>Прокачка лідерських навичок на нашій майбутній зміні. Чекаємо вас знову!</p>
     </div>
     <div class="contact-card">
       <img class="contact-logo" src="${LOGO_SRC}" alt="WestCamp Kids">
