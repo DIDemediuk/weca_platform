@@ -6,7 +6,10 @@ vi.mock("../../src/services/pdf.js", () => ({
   closeBrowser: vi.fn(async () => {}),
 }));
 vi.mock("../../src/services/ai.js", () => ({
-  weaveExample: vi.fn(async () => "Оживлений текст про дитину."),
+  weaveReport: vi.fn(async () => ({
+    coverQuote: "Оживлений текст про дитину.",
+    talentBridge: "Місток про дитину.",
+  })),
 }));
 
 const cfg = {

@@ -9,6 +9,7 @@ const report: Report = {
   id: "abc", childName: "Артем", shift: "3",
   primaryType: "kinesthetic", secondaryType: "interpersonal",
   example: "Капітанство у квесті.", wovenExample: "Оживлений абзац про Артема.",
+  talentBridge: "Місток про Артема.",
   photoPath: "file:///uploads/a.jpg", createdAt: new Date().toISOString(),
 };
 

@@ -147,6 +147,7 @@ async function main(): Promise<void> {
     photoPath: await photoSrc(options.photoPath),
     createdAt: options.createdAt,
     wovenExample: options.example,
+    talentBridge: `«${options.example.trim()}» — саме в таких моментах дитина розкривається найяскравіше.`,
   };
 
   const html = renderReportHtml({

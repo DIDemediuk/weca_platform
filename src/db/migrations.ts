@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS reports (
   secondary_type TEXT,
   example TEXT NOT NULL,
   woven_example TEXT NOT NULL,
+  talent_bridge TEXT NOT NULL DEFAULT '',
   photo_path TEXT NOT NULL,
   created_at TEXT NOT NULL
 );

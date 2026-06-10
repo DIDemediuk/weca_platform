@@ -6,7 +6,7 @@ import type { Report } from "../../src/domain/types.js";
 const sample: Report = {
   id: "abc123", childName: "Артем", shift: "3",
   primaryType: "kinesthetic", secondaryType: "interpersonal",
-  example: "Капітанство у квесті.", wovenExample: "Оживлений текст.",
+  example: "Капітанство у квесті.", wovenExample: "Оживлений текст.", talentBridge: "Місток.",
   photoPath: "/uploads/a.jpg", createdAt: new Date().toISOString(),
 };
 
@@ -16,6 +16,11 @@ describe("reports repo", () => {
     insertReport(db, sample);
     expect(getReport(db, "abc123")?.childName).toBe("Артем");
     expect(listReports(db)).toHaveLength(1);
+  });
+  it("persists talentBridge", () => {
+    const db = openDb(":memory:");
+    insertReport(db, sample);
+    expect(getReport(db, "abc123")?.talentBridge).toBe("Місток.");
   });
   it("handles missing secondaryType", () => {
     const db = openDb(":memory:");

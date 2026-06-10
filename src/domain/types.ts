@@ -33,6 +33,7 @@ export interface ReportInput {
 
 export interface Report extends ReportInput {
   id: string;
-  wovenExample: string;  // AI (or fallback) prose
+  wovenExample: string;  // AI (or fallback) cover quote
+  talentBridge: string;  // AI (or fallback) bridge for the primary talent page
   createdAt: string;     // ISO
 }

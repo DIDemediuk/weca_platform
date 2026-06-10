@@ -3,7 +3,7 @@ import { getIntelligence } from "../db/intelligences.repo.js";
 import { insertReport } from "../db/reports.repo.js";
 import { renderRadarSvg } from "./radar.js";
 import { renderReportHtml } from "./reportTemplate.js";
-import { weaveExample, type WeaveArgs } from "./ai.js";
+import { weaveReport, type WeaveArgs, type WeaveResult } from "./ai.js";
 import { renderPdf } from "./pdf.js";
 import { imageFileToDataUri } from "./imageSrc.js";
 import type { Report, IntelligenceType } from "../domain/types.js";
@@ -12,7 +12,7 @@ import type { ReportInputParsed } from "../domain/validation.js";
 export interface BuildDeps {
   db: DB;
   deepseekApiKey: string;
-  weave?: (a: WeaveArgs) => Promise<string>;
+  weave?: (a: WeaveArgs) => Promise<WeaveResult>;
   render?: (html: string) => Promise<Buffer>;
   idGen?: () => string;
   now?: () => Date;
@@ -25,7 +25,7 @@ export interface BuildResult {
 }
 
 export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Promise<BuildResult> {
-  const weave = deps.weave ?? weaveExample;
+  const weave = deps.weave ?? weaveReport;
   const render = deps.render ?? renderPdf;
   const idGen = deps.idGen ?? (() => Math.random().toString(36).slice(2, 10));
   const now = deps.now ?? (() => new Date());
@@ -36,7 +36,7 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
     ? getIntelligence(deps.db, input.secondaryType)
     : undefined;
 
-  const wovenExample = await weave({
+  const woven = await weave({
     childName: input.childName,
     example: input.example,
     primaryType: input.primaryType,
@@ -53,7 +53,8 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
     primaryType: input.primaryType,
     secondaryType: input.secondaryType,
     example: input.example,
-    wovenExample,
+    wovenExample: woven.coverQuote,
+    talentBridge: woven.talentBridge,
     photoPath: input.photoPath,
     createdAt: now().toISOString(),
   };

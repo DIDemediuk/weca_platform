@@ -13,7 +13,10 @@ const input: ReportInputParsed = {
 describe("buildReport", () => {
   it("weaves, persists, and renders a pdf", async () => {
     const db = openDb(":memory:");
-    const weave = vi.fn(async () => "Оживлений текст про Артема.");
+    const weave = vi.fn(async () => ({
+      coverQuote: "Оживлений текст про Артема.",
+      talentBridge: "Місток про Артема.",
+    }));
     const render = vi.fn(async () => Buffer.from("%PDF-fake"));
     const result = await buildReport(input, {
       db, deepseekApiKey: "key", weave, render,
@@ -23,6 +26,8 @@ describe("buildReport", () => {
 
     expect(result.report.id).toBe("id123");
     expect(result.report.wovenExample).toBe("Оживлений текст про Артема.");
+    expect(result.report.talentBridge).toBe("Місток про Артема.");
+    expect(getReport(db, "id123")?.talentBridge).toBe("Місток про Артема.");
     expect(result.pdf.subarray(0, 4).toString("latin1")).toBe("%PDF");
     expect(getReport(db, "id123")?.childName).toBe("Артем");
 

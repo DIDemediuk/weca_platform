@@ -13,6 +13,7 @@ export function openDb(path: string): DB {
   db.exec(MIGRATIONS);
   ensureColumn(db, "intelligences", "hobbies", "TEXT NOT NULL DEFAULT ''");
   ensureColumn(db, "intelligences", "professions", "TEXT NOT NULL DEFAULT ''");
+  ensureColumn(db, "reports", "talent_bridge", "TEXT NOT NULL DEFAULT ''");
   seedIntelligences(db);
   reapplySeedDefaults(db);
   return db;

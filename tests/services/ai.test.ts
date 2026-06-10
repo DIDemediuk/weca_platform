@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { buildWeavePrompt, weaveExample } from "../../src/services/ai.js";
+import { buildWeavePrompt, weaveReport } from "../../src/services/ai.js";
 
 const args = {
   childName: "Артем",
@@ -12,41 +12,50 @@ const args = {
 
 afterEach(() => vi.restoreAllMocks());
 
-describe("weaveExample", () => {
+describe("weaveReport", () => {
   it("falls back when no api key", async () => {
-    const out = await weaveExample({ ...args, apiKey: "" });
-    expect(out).toContain("Артем");
-    expect(out).toContain("капітанство");
-    expect(out).toContain("не сухий тест");
+    const out = await weaveReport({ ...args, apiKey: "" });
+    expect(out.coverQuote).toContain("Артем");
+    expect(out.coverQuote).toContain("капітанство");
+    expect(out.talentBridge).toContain("Артем");
+    expect(out.talentBridge).toContain("капітанство");
   });
 
-  it("builds a richer, warmer prompt with knowledge context", () => {
+  it("builds a prompt asking for JSON with two fields", () => {
     const prompt = buildWeavePrompt({ ...args, apiKey: "key" });
     expect(prompt).toContain("База знань для інтерпретації");
-    expect(prompt).toContain("спорт");
-    expect(prompt).toContain("команд");
+    expect(prompt).toContain("coverQuote");
+    expect(prompt).toContain("talentBridge");
     expect(prompt).toContain("без сюсюкання");
-    expect(prompt).toContain("Не використовуй канцелярит");
   });
 
-  it("returns AI content when api responds", async () => {
+  it("returns both AI texts when api responds with json", async () => {
+    const content = JSON.stringify({ coverQuote: "Цитата про Артема.", talentBridge: "Місток про Артема." });
     vi.stubGlobal("fetch", vi.fn(async () =>
-      new Response(JSON.stringify({ choices: [{ message: { content: "Оживлений абзац про Артема." } }] }),
-        { status: 200 })
+      new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 })
     ));
-    const out = await weaveExample({ ...args, apiKey: "key" });
-    expect(out).toBe("Оживлений абзац про Артема.");
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.coverQuote).toBe("Цитата про Артема.");
+    expect(out.talentBridge).toBe("Місток про Артема.");
+  });
+
+  it("falls back when api returns malformed json", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () =>
+      new Response(JSON.stringify({ choices: [{ message: { content: "просто текст" } }] }), { status: 200 })
+    ));
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.coverQuote).toContain("капітанство");
   });
 
   it("falls back on http error", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response("err", { status: 500 })));
-    const out = await weaveExample({ ...args, apiKey: "key" });
-    expect(out).toContain("капітанство");
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.coverQuote).toContain("капітанство");
   });
 
   it("falls back on network throw", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("offline"); }));
-    const out = await weaveExample({ ...args, apiKey: "key" });
-    expect(out).toContain("Артем");
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.talentBridge).toContain("Артем");
   });
 });

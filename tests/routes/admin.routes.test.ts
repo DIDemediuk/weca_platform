@@ -25,7 +25,7 @@ describe("admin routes", () => {
     const app = buildServer(cfg);
     insertReport(app.db, {
       id: "r1", childName: "Артем", shift: "3", primaryType: "musical",
-      secondaryType: undefined, example: "x", wovenExample: "y",
+      secondaryType: undefined, example: "x", wovenExample: "y", talentBridge: "b",
       photoPath: "/uploads/a.jpg", createdAt: "2026-06-08T10:00:00Z",
     });
     const res = await app.inject({ method: "GET", url: "/admin/A" });
