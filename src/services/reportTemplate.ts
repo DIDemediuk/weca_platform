@@ -120,6 +120,8 @@ export function renderReportHtml(a: TemplateArgs): string {
   const shiftName = `Зміна ${r.shift}`;
   const date = formatDate(r.createdAt);
   const strip = talentStrip(r.primaryType, r.secondaryType);
+  const primaryColor = TYPE_COLORS[r.primaryType];
+  const secondaryColor = r.secondaryType ? TYPE_COLORS[r.secondaryType] : C.sky;
 
   return `<!doctype html><html lang="uk"><head><meta charset="utf-8">
 <style>
@@ -205,27 +207,62 @@ export function renderReportHtml(a: TemplateArgs): string {
     gap: 9mm;
     min-height: 190mm;
   }
-  .trail {
-    margin: 1mm 0 0;
+  .insight-flow {
+    position: relative;
+    height: 35mm;
+    margin: 0 0 -2mm;
   }
-  .trail svg {
+  .insight-flow svg {
     display: block;
-    width: 158mm;
+    width: 170mm;
     height: auto;
     margin: 0 auto;
   }
   .intro-kicker {
+    position: relative;
+    display: inline-block;
     font-size: 11.6pt;
-    margin-bottom: 3.5mm;
+    margin-bottom: 2.6mm;
+    background: #FFFFFF;
+    z-index: 1;
   }
   .intro-card {
-    margin-top: 1mm;
-    background: ${C.panel};
+    position: relative;
+    margin-top: 0;
+    background:
+      linear-gradient(135deg, #FFFFFF, #FFF9EC),
+      linear-gradient(88deg, #FFFFFF, #EAF7FB);
     border: .55mm solid ${C.line};
-    border-radius: 7mm;
-    padding: 7mm 8mm;
+    border-radius: 8mm;
+    padding: 7mm 8mm 7mm 17mm;
+    box-shadow: 0 2mm 0 #E9F1EC;
+    overflow: hidden;
+  }
+  .intro-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8mm;
+    background: ${C.orange};
+    z-index: 0;
+  }
+  .intro-card::after {
+    content: "";
+    position: absolute;
+    right: 5mm;
+    top: 14mm;
+    width: 58mm;
+    height: 58mm;
+    border-radius: 50%;
+    background: #EFF8EF;
+    border: 1.2mm solid #DDEBDD;
+    z-index: 0;
   }
   .intro-card p {
+    position: relative;
+    z-index: 1;
     margin: 0;
     font-size: 12.4pt;
     line-height: 1.55;
@@ -555,23 +592,66 @@ export function renderReportHtml(a: TemplateArgs): string {
   </header>
   <h2>Множинний інтелект за методикою Говарда Гарднера</h2>
   <div class="chart-box chart-wide">${a.radarSvg}</div>
-  <div class="trail">
-    <svg viewBox="0 0 760 100" xmlns="http://www.w3.org/2000/svg">
-      <path d="M380 10 C 470 34, 310 36, 240 54 C 200 64, 168 66, 146 72"
-        fill="none" stroke="${C.navySoft}" stroke-width="3.6"
-        stroke-linecap="round" stroke-dasharray="0.5 11"/>
-      <circle cx="380" cy="10" r="5.5" fill="${TYPE_COLORS[r.primaryType]}" stroke="#FFFFFF" stroke-width="1.6"/>
-      <path d="M447 16 l3.2 7.8 7.8 3.2 -7.8 3.2 -3.2 7.8 -3.2 -7.8 -7.8 -3.2 7.8 -3.2 z" fill="${C.yellow}"/>
-      <path d="M300 34 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6 -6.4 -6.4 -2.6 6.4 -2.6 z" fill="${C.sky}"/>
-      <path d="M212 52 l2.2 5.4 5.4 2.2 -5.4 2.2 -2.2 5.4 -2.2 -5.4 -5.4 -2.2 5.4 -2.2 z" fill="${C.green}"/>
-      <text x="468" y="58" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif"
-        font-size="13" font-style="italic" fill="${C.muted}">стежка від карти талантів до пояснення</text>
-      <path d="M138 58 c-9 0 -16 7 -16 16 c0 11 16 24 16 24 c0 0 16 -13 16 -24 c0 -9 -7 -16 -16 -16 z" fill="${C.orange}"/>
-      <circle cx="138" cy="74" r="5.5" fill="#FFFFFF"/>
+  <div class="insight-flow">
+    <svg viewBox="0 0 820 164" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M644 18 C 560 20, 518 48, 594 66 C 682 87, 620 124, 493 113 C 360 102, 335 136, 176 128"
+        fill="none" stroke="#FFF3D7" stroke-width="24" stroke-linecap="round"/>
+      <path d="M644 18 C 560 20, 518 48, 594 66 C 682 87, 620 124, 493 113 C 360 102, 335 136, 176 128"
+        fill="none" stroke="${C.navySoft}" stroke-width="4.4" stroke-linecap="round" stroke-dasharray="2 14"/>
+      <path d="M188 115 l-24 15 26 12" fill="none" stroke="${C.orange}" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="644" cy="18" r="7.5" fill="${primaryColor}" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="596" cy="66" r="6" fill="${secondaryColor}" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="505" cy="113" r="4.5" fill="${C.yellow}"/>
+      <circle cx="392" cy="115" r="3.8" fill="${C.green}"/>
+      <circle cx="260" cy="129" r="3.8" fill="${C.sky}"/>
+      <g fill="${C.green}" stroke="${C.navySoft}" stroke-width="1.4" stroke-linejoin="round">
+        <path d="M680 27 l10 -18 l10 18 h-6 l8 13 h-24 l8 -13z"/>
+        <path d="M704 48 l9 -16 l9 16 h-5 l7 12 h-22 l7 -12z"/>
+        <path d="M656 52 l9 -16 l9 16 h-5 l7 12 h-22 l7 -12z"/>
+        <path d="M724 77 l8 -15 l8 15 h-5 l7 11 h-20 l7 -11z"/>
+        <path d="M636 82 l8 -15 l8 15 h-5 l7 11 h-20 l7 -11z"/>
+        <path d="M586 128 l10 -18 l10 18 h-6 l8 13 h-24 l8 -13z"/>
+        <path d="M430 88 l8 -15 l8 15 h-5 l7 11 h-20 l7 -11z"/>
+        <path d="M304 109 l8 -15 l8 15 h-5 l7 11 h-20 l7 -11z"/>
+      </g>
+      <g stroke="${C.navySoft}" stroke-width="2" stroke-linecap="round">
+        <path d="M690 40 v8"/>
+        <path d="M713 60 v8"/>
+        <path d="M665 64 v8"/>
+        <path d="M732 88 v7"/>
+        <path d="M644 93 v7"/>
+        <path d="M596 141 v8"/>
+        <path d="M438 99 v7"/>
+        <path d="M312 120 v7"/>
+      </g>
+      <path d="M618 42 l18 -8 v28 l-18 -8 z" fill="${C.orange}"/>
+      <path d="M618 34 v34" stroke="${C.navy}" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M374 133 c11 -13 27 -11 37 0 c-13 6 -25 6 -37 0z" fill="${C.green}"/>
+      <path d="M390 125 c4 9 4 17 0 25" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M474 46 l3.8 9 9 3.8 -9 3.8 -3.8 9 -3.8 -9 -9 -3.8 9 -3.8 z" fill="${C.yellow}"/>
+      <g transform="translate(610 61) rotate(9)">
+        <path d="M-39 6 h8 l10 -17 h38 l13 17 h8 c6 0 11 5 11 11 v13 h-99 v-13 c0 -6 5 -11 11 -11z"
+          fill="${C.orange}" stroke="${C.navy}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M-17 -8 h29 l8 14 h-46z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width="2"/>
+        <rect x="-23" y="8" width="36" height="14" rx="4" fill="#FFFFFF"/>
+        <text x="-5" y="20" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif"
+          font-size="17" font-weight="900" fill="${C.navy}">W</text>
+        <circle cx="-30" cy="31" r="8" fill="${C.navy}"/>
+        <circle cx="28" cy="31" r="8" fill="${C.navy}"/>
+        <circle cx="-30" cy="31" r="3" fill="#FFFFFF"/>
+        <circle cx="28" cy="31" r="3" fill="#FFFFFF"/>
+      </g>
+      <path d="M231 133 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M536 92 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="132" cy="128" r="33" fill="#FFF7D6" stroke="#FFE19A" stroke-width="3"/>
+      <path d="M112 128 h40 M132 108 v40 M118 116 l28 24 M146 116 l-28 24" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+      <rect x="112" y="112" width="48" height="32" rx="7" fill="#FFFFFF" stroke="${C.line}" stroke-width="3"/>
+      <path d="M124 124 h24 M124 134 h18" stroke="${C.navySoft}" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="153" cy="118" r="5" fill="${C.sky}"/>
     </svg>
   </div>
-  <div class="intro-card">
-    <p class="kicker intro-kicker">★ Слово від команди WestCamp</p>
+  <div class="intro-card" style="--primary:${primaryColor};--secondary:${secondaryColor}">
+    <p class="kicker intro-kicker">Слово від команди WestCamp</p>
     <p>${esc(INTRO_TEXT)}</p>
   </div>
 </section>
