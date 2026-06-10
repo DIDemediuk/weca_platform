@@ -630,16 +630,15 @@ export function renderReportHtml(a: TemplateArgs): string {
       <path d="M390 125 c4 9 4 17 0 25" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
       <path d="M474 46 l3.8 9 9 3.8 -9 3.8 -3.8 9 -3.8 -9 -9 -3.8 9 -3.8 z" fill="${C.yellow}"/>
       <g transform="translate(610 61) rotate(9)">
-        <path d="M-39 6 h8 l10 -17 h38 l13 17 h8 c6 0 11 5 11 11 v13 h-99 v-13 c0 -6 5 -11 11 -11z"
+        <path d="M-48 6 h9 l12 -20 h46 l15 20 h9 c7 0 13 6 13 13 v16 h-112 v-16 c0 -7 6 -13 13 -13z"
           fill="${C.orange}" stroke="${C.navy}" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M-17 -8 h29 l8 14 h-46z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width="2"/>
-        <rect x="-23" y="8" width="36" height="14" rx="4" fill="#FFFFFF"/>
-        <text x="-5" y="20" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif"
-          font-size="17" font-weight="900" fill="${C.navy}">W</text>
-        <circle cx="-30" cy="31" r="8" fill="${C.navy}"/>
-        <circle cx="28" cy="31" r="8" fill="${C.navy}"/>
-        <circle cx="-30" cy="31" r="3" fill="#FFFFFF"/>
-        <circle cx="28" cy="31" r="3" fill="#FFFFFF"/>
+        <path d="M-22 -10 h34 l10 16 h-54z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width="2"/>
+        <rect x="-31" y="9" width="53" height="16" rx="4" fill="#FFFFFF"/>
+        <image href="${LOGO_SRC}" x="-47" y="1.8" width="88" height="30.5" preserveAspectRatio="xMidYMid meet"/>
+        <circle cx="-36" cy="36" r="9" fill="${C.navy}"/>
+        <circle cx="35" cy="36" r="9" fill="${C.navy}"/>
+        <circle cx="-36" cy="36" r="3.4" fill="#FFFFFF"/>
+        <circle cx="35" cy="36" r="3.4" fill="#FFFFFF"/>
       </g>
       <path d="M231 133 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
       <path d="M536 92 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
