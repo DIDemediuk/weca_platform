@@ -1,5 +1,7 @@
 import { esc } from "./html.js";
 
+const SHIFT_OPTIONS = ["1 Kids", "2 Kids", "3 Kids", "4 Kids", "5 Kids", "6 Kids", "7 Kids"];
+
 const TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: "linguistic", label: "Лінгвістичний" },
   { value: "logical", label: "Логіко-математичний" },
@@ -21,6 +23,7 @@ export function formPage(secret: string, error?: string): string {
     secret,
     error,
     types: TYPE_OPTIONS,
+    shifts: SHIFT_OPTIONS,
     submitUrl: `/f/${secret}`,
   };
   const fallback = `<main class="app-shell"><aside class="sidebar">
@@ -30,15 +33,10 @@ export function formPage(secret: string, error?: string): string {
 ${error ? `<div class="error">${esc(error)}</div>` : ""}
 <form class="form-grid" method="post" action="/f/${esc(secret)}" enctype="multipart/form-data">
 <label>ПІБ дитини<input name="childName" required maxlength="80"></label>
-<label>Номер зміни<input name="shift" required maxlength="40"></label>
+<label>Зміна<select name="shift" required>${SHIFT_OPTIONS.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("")}</select></label>
 <label>Домінуючий тип 1<select name="primaryType" required>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
 <label>Домінуючий тип 2<select name="secondaryType"><option value="">немає</option>${TYPE_OPTIONS.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join("")}</select></label>
-<label class="wide">Живий приклад з табору<textarea name="example" required maxlength="800" rows="4"></textarea></label>
-<label class="wide">Вхідний квест / стартовий вибір<textarea name="questSignal" maxlength="500" rows="3"></textarea></label>
-<label class="wide">МК та поведінка на них<textarea name="workshopNotes" maxlength="700" rows="3"></textarea></label>
-<label class="wide">Спостереження дня 3/6/9<textarea name="observationNotes" maxlength="700" rows="3"></textarea></label>
-<label class="wide">Вечірні рефлексії<textarea name="reflectionNotes" maxlength="600" rows="3"></textarea></label>
-<label class="wide">Фінальна добровільна роль<input name="finalProjectNotes" maxlength="220"></label>
+<label class="wide">Згадка про дитину — живий приклад з табору<textarea name="example" required maxlength="800" rows="5"></textarea></label>
 <label class="wide upload-box">Фото дитини<input type="file" name="photo" accept="image/*" required></label>
 <button class="primary-action wide" type="submit">Згенерувати PDF</button>
 </form></section></main>`;

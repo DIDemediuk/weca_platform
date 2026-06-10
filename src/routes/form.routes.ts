@@ -7,21 +7,6 @@ import { formPage } from "../web/formPage.js";
 import { reportInputSchema } from "../domain/validation.js";
 import { buildReport } from "../services/reportBuilder.js";
 
-function buildEvidence(fields: Record<string, string>): string {
-  const rows = [
-    ["Живий приклад тім-ліда", fields.example],
-    ["Вхідний квест / стартовий вибір", fields.questSignal],
-    ["МК та поведінка на них", fields.workshopNotes],
-    ["Спостереження дня 3/6/9", fields.observationNotes],
-    ["Вечірні рефлексії", fields.reflectionNotes],
-    ["Фінальний проєкт / добровільна роль", fields.finalProjectNotes],
-  ]
-    .map(([label, value]) => [label, String(value ?? "").trim()] as const)
-    .filter(([, value]) => value.length > 0);
-
-  return rows.map(([label, value]) => `${label}: ${value}`).join("\n");
-}
-
 export async function formRoutes(app: FastifyInstance) {
   const cfg = app.appConfig;
   const db = app.db;
@@ -58,7 +43,7 @@ export async function formRoutes(app: FastifyInstance) {
       shift: fields.shift,
       primaryType: fields.primaryType,
       secondaryType: fields.secondaryType ? fields.secondaryType : undefined,
-      example: buildEvidence(fields),
+      example: fields.example ?? "",
       photoPath: photoPath || "missing",
     });
 

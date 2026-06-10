@@ -99,7 +99,7 @@ npm test               # 31 tests, ~15s (Vitest)
 - **PDF generation takes 2–6 s** — Playwright spins up a shared Chromium instance on first request; subsequent requests reuse it.
 - **Windows terminal garbles Cyrillic** — curl output may show replacement characters in the terminal, but the HTTP response body is correctly UTF-8 encoded. Verify bytes, not terminal display.
 - **Photo upload required** — form POST returns 400 without a `photo` field. The smoke script uses `placeholder.jpg` (a CSS file renamed) — Playwright accepts any bytes as an image in the template.
-- **`buildEvidence` stub fields** — `form.routes.ts` references `questSignal`, `workshopNotes`, `observationNotes`, `reflectionNotes`, `finalProjectNotes` that are not in the form HTML yet. They silently filter out as empty. Not a bug — they're ready for a future multi-field form.
+- **Form is intentionally minimal** — name, shift (dropdown `1 Kids`…`7 Kids`), two type selects, one `example` textarea, photo. The old multi-field evidence inputs (`questSignal`, `workshopNotes`, …) and `buildEvidence` were removed; the AI weave receives `example` as-is.
 - **Admin PDF re-generation reads photo from disk** — if the photo file is deleted or the volume not mounted on Railway, re-downloading an old PDF from admin will 500.
 
 ## Troubleshooting
