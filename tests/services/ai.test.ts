@@ -58,4 +58,36 @@ describe("weaveReport", () => {
     const out = await weaveReport({ ...args, apiKey: "key" });
     expect(out.talentBridge).toContain("Артем");
   });
+
+  it("instructs the model to stick to the primary type in the bridge", () => {
+    const prompt = buildWeavePrompt({ ...args, apiKey: "key" });
+    expect(prompt).toContain("не згадуй назв інших типів");
+    expect(prompt).toContain("Тілесно-кінестетичний інтелект");
+  });
+
+  it("replaces the bridge with fallback when AI names a different intelligence", async () => {
+    const content = JSON.stringify({
+      coverQuote: "Гарна цитата про Артема.",
+      talentBridge: "Цей виступ розкрив її музичний інтелект: вона відчула ритм пісні.",
+    });
+    vi.stubGlobal("fetch", vi.fn(async () =>
+      new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 })
+    ));
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.coverQuote).toBe("Гарна цитата про Артема.");
+    expect(out.talentBridge).not.toContain("музичний");
+    expect(out.talentBridge).toContain("капітанство");
+  });
+
+  it("keeps the bridge when it mentions only the primary type", async () => {
+    const content = JSON.stringify({
+      coverQuote: "Цитата.",
+      talentBridge: "Капітанство показало тілесно-кінестетичний талант Артема в дії.",
+    });
+    vi.stubGlobal("fetch", vi.fn(async () =>
+      new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status: 200 })
+    ));
+    const out = await weaveReport({ ...args, apiKey: "key" });
+    expect(out.talentBridge).toContain("тілесно-кінестетичний");
+  });
 });

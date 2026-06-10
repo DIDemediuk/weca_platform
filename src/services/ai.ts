@@ -18,6 +18,26 @@ export interface WeaveResult {
 
 const ENDPOINT = "https://api.deepseek.com/chat/completions";
 
+// Розпізнавальні корені назв типів — щоб зловити місток, який говорить про чужий талант.
+const TYPE_KEYWORDS: Record<IntelligenceType, string> = {
+  linguistic: "лінгвіст",
+  logical: "логіко",
+  spatial: "просторов",
+  kinesthetic: "кінестет",
+  musical: "музичн",
+  interpersonal: "міжособист",
+  intrapersonal: "внутрішньоособист",
+  naturalistic: "натураліст",
+};
+
+/** Місток має говорити лише про головний талант; згадка іншого типу — ознака, що AI пішов за прикладом, а не за вибором тім-ліда. */
+function bridgeContradictsPrimary(bridge: string, primary: IntelligenceType): boolean {
+  const low = bridge.toLowerCase();
+  return (Object.entries(TYPE_KEYWORDS) as [IntelligenceType, string][]).some(
+    ([type, keyword]) => type !== primary && low.includes(keyword)
+  );
+}
+
 function fallback(a: WeaveArgs): WeaveResult {
   const types = a.secondaryTitle ? `${a.primaryTitle} та ${a.secondaryTitle}` : a.primaryTitle;
   const primaryEssence = knowledgeSummary(a.primaryType).split("\n")[0].replace("Суть: ", "");
@@ -49,7 +69,9 @@ export function buildWeavePrompt(a: WeaveArgs): string {
     `Поверни СУВОРО валідний JSON без markdown-обгорток, з двома полями:\n` +
     `{"coverQuote": "...", "talentBridge": "..."}\n` +
     `coverQuote: 1-2 короткі абзаци (до 105 слів) для обкладинки - маленька сцена з прикладу тім-ліда, яку сильну сторону вона відкриває, один теплий натяк батькам. Звертайся до дитини на ім'я. ` +
-    `talentBridge: 2-3 речення (до 45 слів) для сторінки головного таланту - чому саме цей приклад показав нам головний талант дитини. Без повторення coverQuote дослівно.`
+    `talentBridge: 2-3 речення (до 45 слів) для сторінки головного таланту. ` +
+    `ВАЖЛИВО про talentBridge: головний талант дитини - «${a.primaryTitle}», і місток має пояснювати зв'язок прикладу САМЕ з цим типом; не згадуй назв інших типів інтелекту. ` +
+    `Якщо приклад тім-ліда слабко пов'язаний з головним типом або дуже короткий - не натягуй висновок: напиши, що команда побачила цей талант у щоденних активностях зміни, а приклад показує характер дитини. Спирайся на базу знань і не вигадуй сцен, яких не було. Без повторення coverQuote дослівно.`
   );
 }
 
@@ -77,7 +99,10 @@ export async function weaveReport(a: WeaveArgs): Promise<WeaveResult> {
     const parsed = JSON.parse(text) as Partial<WeaveResult>;
     if (typeof parsed.coverQuote !== "string" || typeof parsed.talentBridge !== "string") return fallback(a);
     if (!parsed.coverQuote.trim() || !parsed.talentBridge.trim()) return fallback(a);
-    return { coverQuote: parsed.coverQuote.trim(), talentBridge: parsed.talentBridge.trim() };
+    const bridge = bridgeContradictsPrimary(parsed.talentBridge, a.primaryType)
+      ? fallback(a).talentBridge
+      : parsed.talentBridge.trim();
+    return { coverQuote: parsed.coverQuote.trim(), talentBridge: bridge };
   } catch {
     return fallback(a);
   }
