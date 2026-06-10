@@ -197,7 +197,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 3mm;
+    gap: 5mm;
     align-items: start;
   }
   .chart-box, .talent-card, .parent-card, .future-card {
@@ -214,7 +214,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-box svg { width: 112mm; height: auto; display: block; margin: 0 auto; }
   .talents {
     display: grid;
-    gap: 2.5mm;
+    gap: 4mm;
   }
   .talent-card {
     display: grid;
@@ -281,8 +281,8 @@ export function renderReportHtml(a: TemplateArgs): string {
   .parents-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 4mm;
-    margin-top: 5mm;
+    gap: 5.5mm;
+    margin-top: 7mm;
   }
   .parent-card {
     padding: 5mm;
