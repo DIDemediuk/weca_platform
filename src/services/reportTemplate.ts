@@ -102,14 +102,31 @@ export function renderReportHtml(a: TemplateArgs): string {
   .page::before {
     content: "";
     position: absolute;
+    top: 0;
     left: 0;
     right: 0;
-    top: 0;
-    height: 5.5mm;
-    background:
-      linear-gradient(90deg, #24507A 0%, #2F8A57 52%, #24507A 100%),
-      repeating-linear-gradient(135deg, rgba(255,255,255,.22) 0 2mm, transparent 2mm 7mm);
-    background-blend-mode: normal, screen;
+    height: 4.2mm;
+    background: linear-gradient(
+      90deg,
+      ${C.navy} 0%,
+      ${C.navySoft} 15%,
+      ${C.orange} 31%,
+      ${C.yellow} 49%,
+      ${C.green} 68%,
+      ${C.sky} 84%,
+      #FFFFFF 100%
+    );
+    opacity: .96;
+  }
+  .page::after {
+    content: "";
+    position: absolute;
+    top: 4.2mm;
+    left: 0;
+    right: 0;
+    height: .7mm;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(19, 41, 75, .12), transparent);
   }
   .page > * { position: relative; z-index: 1; }
   .page:last-child { page-break-after: auto; }

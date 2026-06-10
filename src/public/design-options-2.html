@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Варіації тонкої смужки — верх PDF</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+      color: #333;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+      color: #13294B;
+      font-size: 28px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #777;
+      margin-bottom: 36px;
+      font-size: 15px;
+    }
+    .option-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      margin-bottom: 28px;
+      border: 3px solid transparent;
+    }
+    .option-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.13);
+    }
+    .option-card.selected {
+      border-color: #FF7A1A;
+      background: #fffbf7;
+    }
+    /* Імітація A4-аркуша */
+    .sheet {
+      width: 100%;
+      background: #FFF9EC;
+      padding-bottom: 8px;
+    }
+    .sheet-body {
+      padding: 18px 26px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .mock-logo {
+      width: 140px; height: 38px;
+      background: #e9eef5;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #13294B; font-weight: 800; font-size: 13px;
+    }
+    .mock-meta {
+      width: 150px; height: 30px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid #F0D8A8;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      color: #13294B; font-size: 11px; font-weight: 600;
+    }
+    .option-info { padding: 18px 24px 22px; }
+    .option-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #13294B;
+    }
+    .option-desc { font-size: 14px; line-height: 1.55; color: #666; }
+
+    /* ===== Варіант A: поточний градієнт ===== */
+    .stripe-a {
+      height: 12px;
+      background: linear-gradient(90deg, #13294B 0%, #24507A 15%, #FF7A1A 31%, #FFD166 49%, #2F8A57 68%, #5BC0EB 84%, #FFFFFF 100%);
+    }
+
+    /* ===== Варіант B: сегменти-олівці ===== */
+    .stripe-b {
+      display: flex;
+      gap: 7px;
+      padding: 8px 26px 0;
+    }
+    .stripe-b span {
+      height: 9px;
+      border-radius: 999px;
+    }
+    .stripe-b .s1 { flex: 3.2; background: #13294B; }
+    .stripe-b .s2 { flex: 2.1; background: #FF7A1A; }
+    .stripe-b .s3 { flex: 1.5; background: #FFD166; }
+    .stripe-b .s4 { flex: 2.5; background: #2F8A57; }
+    .stripe-b .s5 { flex: 1.2; background: #5BC0EB; }
+
+    /* ===== Варіант C: хвиляста стрічка ===== */
+    .stripe-c svg { display: block; width: 100%; height: 26px; }
+
+    /* ===== Варіант D: гірлянда прапорців ===== */
+    .stripe-d {
+      position: relative;
+      height: 26px;
+    }
+    .stripe-d .rope {
+      position: absolute;
+      top: 5px; left: 0; right: 0;
+      height: 2px;
+      background: #d9c79a;
+      border-radius: 2px;
+    }
+    .stripe-d .flags {
+      position: absolute;
+      top: 6px; left: 26px; right: 26px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stripe-d .flag {
+      width: 0; height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top-width: 14px;
+      border-top-style: solid;
+    }
+    .btn-group {
+      display: flex; justify-content: center;
+      padding: 18px; background: #f9f9f9; border-radius: 8px;
+    }
+    button {
+      padding: 10px 25px; border: none; border-radius: 6px;
+      font-weight: 600; cursor: pointer; font-size: 14px;
+      background: #FF7A1A; color: white;
+    }
+    button:hover { background: #e66b0a; }
+    .selected-info {
+      margin-top: 26px; padding: 22px;
+      background: #e3f2fd; border-radius: 12px;
+      border-left: 5px solid #5BC0EB; display: none;
+    }
+    .selected-info.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Варіації тонкої смужки</h1>
+    <p class="subtitle">Мінімалізм залишається — але кожен варіант обіграє верх по-своєму. Клікніть на той, що відчувається "ваш".</p>
+
+    <!-- A -->
+    <div class="option-card" onclick="selectOption(this, 'A')">
+      <div class="sheet">
+        <div class="stripe-a"></div>
+        <div class="sheet-body">
+          <div class="mock-logo">WESTCAMP KIDS</div>
+          <div class="mock-meta">Зміна 3 · 10 червня</div>
+        </div>
+      </div>
+      <div class="option-info">
+        <div class="option-title">A — Суцільний градієнт (як зараз)</div>
+        <div class="option-desc">Поточний варіант для порівняння: одна неперервна смуга, кольори перетікають один в одного.</div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="option-card" onclick="selectOption(this, 'B')">
+      <div class="sheet">
+        <div class="stripe-b">
+          <span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span><span class="s5"></span>
+        </div>
+        <div class="sheet-body">
+          <div class="mock-logo">WESTCAMP KIDS</div>
+          <div class="mock-meta">Зміна 3 · 10 червня</div>
+        </div>
+      </div>
+      <div class="option-info">
+        <div class="option-title">B — Сегменти-«олівці»</div>
+        <div class="option-desc">Окремі заокруглені рисочки різної довжини у фірмових кольорах — як кольорові олівці або стрічки прогресу. Чисті кольори без градієнта виглядають дорожче, кожен сегмент натякає на окремий талант дитини.</div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="option-card" onclick="selectOption(this, 'C')">
+      <div class="sheet">
+        <div class="stripe-c">
+          <svg viewBox="0 0 800 26" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="wave-grad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#13294B"/>
+                <stop offset="30%" stop-color="#FF7A1A"/>
+                <stop offset="50%" stop-color="#FFD166"/>
+                <stop offset="70%" stop-color="#2F8A57"/>
+                <stop offset="100%" stop-color="#5BC0EB"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,0 H800 V12 Q780,22 750,14 T690,14 T630,14 T570,14 T510,14 T450,14 T390,14 T330,14 T270,14 T210,14 T150,14 T90,14 T30,14 Q10,12 0,16 Z" fill="url(#wave-grad)"/>
+          </svg>
+        </div>
+        <div class="sheet-body">
+          <div class="mock-logo">WESTCAMP KIDS</div>
+          <div class="mock-meta">Зміна 3 · 10 червня</div>
+        </div>
+      </div>
+      <div class="option-info">
+        <div class="option-title">C — Хвиляста стрічка</div>
+        <div class="option-desc">Той самий градієнт, але нижній край — м'яка хвиля замість прямої лінії. Асоціація з пригодами, водою, рухом. Жива форма, але стримана кольорова подача.</div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="option-card" onclick="selectOption(this, 'D')">
+      <div class="sheet">
+        <div class="stripe-d">
+          <div class="rope"></div>
+          <div class="flags" id="flags"></div>
+        </div>
+        <div class="sheet-body">
+          <div class="mock-logo">WESTCAMP KIDS</div>
+          <div class="mock-meta">Зміна 3 · 10 червня</div>
+        </div>
+      </div>
+      <div class="option-info">
+        <div class="option-title">D — Гірлянда прапорців</div>
+        <div class="option-desc">Класична таборова гірлянда з трикутних прапорців у фірмових кольорах на тонкій «мотузці». Миттєво зчитується як дитячий табір — святково, але якщо прапорці маленькі й охайні, виглядає акуратно.</div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button onclick="confirmChoice()">Вибрати цей варіант →</button>
+    </div>
+
+    <div class="selected-info" id="selectedInfo">
+      <h3>Вибраний варіант:</h3>
+      <p id="selectedText"></p>
+    </div>
+  </div>
+
+  <script>
+    const flagColors = ["#13294B", "#FF7A1A", "#FFD166", "#2F8A57", "#5BC0EB"];
+    const flagsEl = document.getElementById('flags');
+    for (let i = 0; i < 24; i++) {
+      const f = document.createElement('div');
+      f.className = 'flag';
+      f.style.borderTopColor = flagColors[i % flagColors.length];
+      flagsEl.appendChild(f);
+    }
+
+    let selected = null;
+    function selectOption(card, key) {
+      document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selected = key;
+      document.getElementById('selectedInfo').classList.remove('show');
+    }
+    function confirmChoice() {
+      if (!selected) { alert('Будь ласка, виберіть варіант'); return; }
+      const names = {
+        A: "Суцільний градієнт (як зараз)",
+        B: "Сегменти-«олівці»",
+        C: "Хвиляста стрічка",
+        D: "Гірлянда прапорців"
+      };
+      document.getElementById('selectedText').textContent =
+        `Ви обрали: "${selected} — ${names[selected]}". Напишіть це Claude в термінал!`;
+      document.getElementById('selectedInfo').classList.add('show');
+    }
+  </script>
+</body>
+</html>

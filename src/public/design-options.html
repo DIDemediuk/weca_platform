@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Варіанти дизайну верхньої частини PDF</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #13294B;
+      font-size: 32px;
+    }
+    .option-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    .option-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .option-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .option-card.selected {
+      border: 3px solid #FF7A1A;
+      background: #fffbf7;
+    }
+    .design-preview {
+      width: 100%;
+      height: 200px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .header-stripe {
+      width: 100%;
+      display: flex;
+      align-items: stretch;
+    }
+    .option-info {
+      padding: 20px;
+    }
+    .option-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #13294B;
+    }
+    .option-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      font-size: 13px;
+    }
+    .pros, .cons {
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .pros {
+      background: #e8f5e9;
+      border-left: 3px solid #2F8A57;
+    }
+    .cons {
+      background: #fff3e0;
+      border-left: 3px solid #FF7A1A;
+    }
+    .pros strong, .cons strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .pros ul, .cons ul {
+      margin-left: 15px;
+    }
+    .pros li, .cons li {
+      margin: 4px 0;
+    }
+
+    /* Design Options */
+    .option1 .header-stripe {
+      background: linear-gradient(90deg, #13294B 0%, #24507A 15%, #FF7A1A 31%, #FFD166 49%, #2F8A57 68%, #5BC0EB 84%, #FFFFFF 100%);
+      height: 6px;
+      opacity: 0.96;
+    }
+
+    .option1-shadow {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(19, 41, 75, 0.12), transparent);
+      margin-bottom: 15px;
+    }
+
+    .option2 .header-stripe {
+      height: 35px;
+      background: linear-gradient(90deg, #13294B 0%, #24507A 15%, #FF7A1A 31%, #FFD166 49%, #2F8A57 68%, #5BC0EB 84%, #FFFFFF 100%);
+      opacity: 0.96;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      letter-spacing: 1px;
+    }
+
+    .option3 .header-stripe {
+      flex-direction: column;
+      background: linear-gradient(135deg, #13294B 0%, #24507A 50%, #2F8A57 100%);
+      padding: 12px 20px;
+      gap: 8px;
+    }
+
+    .option3 .stripe-top {
+      display: flex;
+      gap: 4px;
+      height: 8px;
+    }
+
+    .option3 .color-block {
+      flex: 1;
+      border-radius: 4px;
+    }
+
+    .option3 .stripe-bottom {
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #FF7A1A;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #e66b0a;
+    }
+
+    .selected-info {
+      margin-top: 40px;
+      padding: 30px;
+      background: #e3f2fd;
+      border-radius: 12px;
+      border-left: 5px solid #5BC0EB;
+      display: none;
+    }
+
+    .selected-info.show {
+      display: block;
+    }
+
+    .selected-info h3 {
+      color: #13294B;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Варіанти дизайну верхньої частини PDF звіту</h1>
+
+    <div class="option-group">
+      <!-- ВАРИАНТ 1 -->
+      <div class="option-card" onclick="selectOption(1)">
+        <div class="design-preview">
+          <div class="option1">
+            <div class="header-stripe"></div>
+            <div class="option1-shadow"></div>
+          </div>
+          <div style="flex: 1; padding: 15px; background: white;">
+            <div style="width: 60px; height: 20px; background: #FFD166; border-radius: 20px; margin-bottom: 10px;"></div>
+            <div style="height: 14px; background: #f0f0f0; width: 70%; margin-bottom: 8px; border-radius: 4px;"></div>
+            <div style="height: 12px; background: #e8e8e8; width: 50%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div class="option-info">
+          <div class="option-title">Тонка смужка (поточний варіант)</div>
+          <div class="option-desc">Мінімалістичний дизайн — тонка полоса з градієнтом і ледь помітна тінь. Фокус залишається на змісту.</div>
+          <div class="pros-cons">
+            <div class="pros">
+              <strong>✓ Плюси</strong>
+              <ul>
+                <li>Легка, витончена</li>
+                <li>Не відволікає</li>
+                <li>Класичний дизайн</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <strong>✗ Мінуси</strong>
+              <ul>
+                <li>Може здаватись "надто просто"</li>
+                <li>Менш вау-ефекту</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ВАРИАНТ 2 -->
+      <div class="option-card" onclick="selectOption(2)">
+        <div class="design-preview">
+          <div class="option2">
+            <div class="header-stripe">🌈 ТАЛАНТИ</div>
+          </div>
+          <div style="flex: 1; padding: 15px; background: white;">
+            <div style="width: 60px; height: 20px; background: #FFD166; border-radius: 20px; margin-bottom: 10px;"></div>
+            <div style="height: 14px; background: #f0f0f0; width: 70%; margin-bottom: 8px; border-radius: 4px;"></div>
+            <div style="height: 12px; background: #e8e8e8; width: 50%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div class="option-info">
+          <div class="option-title">Смужка з заголовком</div>
+          <div class="option-desc">Більш видимий дизайн — товстіша смужка з текстом "ТАЛАНТИ" або логотипом всередині. Дає більше значущості.</div>
+          <div class="pros-cons">
+            <div class="pros">
+              <strong>✓ Плюси</strong>
+              <ul>
+                <li>Більш впевнено</li>
+                <li>Видимий фокус</li>
+                <li>Профес іоналізм</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <strong>✗ Мінуси</strong>
+              <ul>
+                <li>Займає місце</li>
+                <li>Менш витончено</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ВАРИАНТ 3 -->
+      <div class="option-card" onclick="selectOption(3)">
+        <div class="design-preview">
+          <div class="option3">
+            <div class="stripe-top">
+              <div class="color-block" style="background: #13294B;"></div>
+              <div class="color-block" style="background: #FF7A1A;"></div>
+              <div class="color-block" style="background: #FFD166;"></div>
+              <div class="color-block" style="background: #2F8A57;"></div>
+              <div class="color-block" style="background: #5BC0EB;"></div>
+            </div>
+            <div class="stripe-bottom">МНОЖИННИЙ ІНТЕЛЕКТ</div>
+          </div>
+          <div style="flex: 1; padding: 15px; background: white;">
+            <div style="width: 60px; height: 20px; background: #FFD166; border-radius: 20px; margin-bottom: 10px;"></div>
+            <div style="height: 14px; background: #f0f0f0; width: 70%; margin-bottom: 8px; border-radius: 4px;"></div>
+            <div style="height: 12px; background: #e8e8e8; width: 50%; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div class="option-info">
+          <div class="option-title">Сегментована смужка + текст</div>
+          <div class="option-desc">Яскравий, структурований дизайн — кольорові блоки (кожен колір = талант) + підпис. Показує педагогічну методику.</div>
+          <div class="pros-cons">
+            <div class="pros">
+              <strong>✓ Плюси</strong>
+              <ul>
+                <li>Неповторний виглад</li>
+                <li>Показує метод</li>
+                <li>Дружний дизайн</li>
+              </ul>
+            </div>
+            <div class="cons">
+              <strong>✗ Мінуси</strong>
+              <ul>
+                <li>Більш складний</li>
+                <li>Може здаватись дитячим</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-primary" onclick="confirmChoice()">Вибрати цей варіант →</button>
+    </div>
+
+    <div class="selected-info" id="selectedInfo">
+      <h3>Вибраний варіант:</h3>
+      <p id="selectedText"></p>
+    </div>
+  </div>
+
+  <script>
+    let selectedOption = null;
+
+    function selectOption(num) {
+      document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+      document.querySelectorAll('.option-card')[num - 1].classList.add('selected');
+      selectedOption = num;
+      document.getElementById('selectedInfo').classList.remove('show');
+    }
+
+    function confirmChoice() {
+      if (!selectedOption) {
+        alert('Будь ласка, виберіть варіант');
+        return;
+      }
+      const names = ['Тонка смужка', 'Смужка з заголовком', 'Сегментована смужка'];
+      document.getElementById('selectedText').textContent = `Ви обрали: "${names[selectedOption - 1]}". Розберемо деталі дизайну!`;
+      document.getElementById('selectedInfo').classList.add('show');
+      setTimeout(() => {
+        document.getElementById('selectedInfo').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  </script>
+</body>
+</html>
