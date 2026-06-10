@@ -43,4 +43,27 @@ describe("renderReportHtml", () => {
     });
     expect(evil).toContain("&lt;b&gt;x&lt;/b&gt;");
   });
+  it("renders the talent strip on every page", () => {
+    const count = html.split('class="talent-strip"').length - 1;
+    expect(count).toBe(3);
+  });
+  it("sizes segments by talent: primary 3x, secondary 2x, rest 1x", () => {
+    expect(html).toContain('data-type="kinesthetic" style="flex:3');
+    expect(html).toContain('data-type="interpersonal" style="flex:2');
+    expect(html).toContain('data-type="musical" style="flex:1');
+    expect(html).toContain('data-type="naturalistic" style="flex:1');
+  });
+  it("renders one long segment when secondary type is missing", () => {
+    const solo = renderReportHtml({
+      report: { ...report, secondaryType: undefined },
+      primary: byType("kinesthetic"),
+      radarSvg: "<svg></svg>",
+    });
+    expect(solo).toContain('data-type="kinesthetic" style="flex:3');
+    expect(solo).toContain('data-type="interpersonal" style="flex:1');
+  });
+  it("drops the old gradient stripe pseudo-elements", () => {
+    expect(html).not.toContain(".page::before");
+    expect(html).not.toContain(".page::after");
+  });
 });

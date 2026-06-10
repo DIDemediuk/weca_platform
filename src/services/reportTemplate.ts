@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { esc } from "../web/html.js";
+import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 import type { IntelligenceContent, Report } from "../domain/types.js";
 
 export interface TemplateArgs {
@@ -23,6 +24,25 @@ const C = {
   muted: "#5F6F7E",
   line: "#F0D8A8",
 };
+
+const STRIP_COLORS: Record<IntelligenceType, string> = {
+  linguistic: C.navy,
+  logical: C.orange,
+  spatial: C.yellow,
+  kinesthetic: C.green,
+  musical: C.sky,
+  interpersonal: C.orange,
+  intrapersonal: C.navy,
+  naturalistic: C.green,
+};
+
+function talentStrip(primary: IntelligenceType, secondary?: IntelligenceType): string {
+  const segments = INTELLIGENCE_TYPES.map((type) => {
+    const flex = type === primary ? 3 : type === secondary ? 2 : 1;
+    return `<span data-type="${type}" style="flex:${flex};background:${STRIP_COLORS[type]}"></span>`;
+  }).join("");
+  return `<div class="talent-strip">${segments}</div>`;
+}
 
 const LOGO_SRC = `data:image/png;base64,${readFileSync(
   new URL("../public/brand/westcamp-kids-logo.png", import.meta.url)
@@ -77,6 +97,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   const secondary = optionalType(a.secondary);
   const shiftName = `Зміна ${r.shift}`;
   const date = formatDate(r.createdAt);
+  const strip = talentStrip(r.primaryType, r.secondaryType);
 
   return `<!doctype html><html lang="uk"><head><meta charset="utf-8">
 <style>
@@ -99,37 +120,16 @@ export function renderReportHtml(a: TemplateArgs): string {
       linear-gradient(135deg, rgba(255, 209, 102, .22) 0 8mm, transparent 8mm 18mm),
       linear-gradient(180deg, #FFFDF7 0%, ${C.paper} 46%, #F3FFF8 100%);
   }
-  .page::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4.2mm;
-    background: linear-gradient(
-      90deg,
-      ${C.navy} 0%,
-      ${C.navySoft} 15%,
-      ${C.orange} 31%,
-      ${C.yellow} 49%,
-      ${C.green} 68%,
-      ${C.sky} 84%,
-      #FFFFFF 100%
-    );
-    opacity: .96;
-  }
-  .page::after {
-    content: "";
-    position: absolute;
-    top: 4.2mm;
-    left: 0;
-    right: 0;
-    height: .7mm;
-    border-radius: 999px;
-    background: linear-gradient(90deg, transparent, rgba(19, 41, 75, .12), transparent);
-  }
-  .page > * { position: relative; z-index: 1; }
   .page:last-child { page-break-after: auto; }
+  .talent-strip {
+    display: flex;
+    gap: 2mm;
+    height: 2.5mm;
+    margin-bottom: 4mm;
+  }
+  .talent-strip span {
+    border-radius: 999px;
+  }
   .header {
     display: flex;
     align-items: center;
@@ -428,6 +428,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </style></head><body>
 
 <section class="page cover-page">
+  ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta"><strong>${esc(shiftName)}</strong><br>${esc(date)}</div>
@@ -449,6 +450,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </section>
 
 <section class="page analytics-page">
+  ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">${esc(shiftName)}</div>
@@ -464,6 +466,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </section>
 
 <section class="page">
+  ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">Для батьків</div>
