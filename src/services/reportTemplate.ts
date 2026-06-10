@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { esc } from "../web/html.js";
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 import type { IntelligenceContent, Report } from "../domain/types.js";
+import { TYPE_COLORS } from "./typeColors.js";
 
 export interface TemplateArgs {
   report: Report;
@@ -25,21 +26,10 @@ const C = {
   line: "#F0D8A8",
 };
 
-const STRIP_COLORS: Record<IntelligenceType, string> = {
-  linguistic: C.navy,
-  logical: C.orange,
-  spatial: C.yellow,
-  kinesthetic: C.green,
-  musical: C.sky,
-  interpersonal: C.orange,
-  intrapersonal: C.navy,
-  naturalistic: C.green,
-};
-
 function talentStrip(primary: IntelligenceType, secondary?: IntelligenceType): string {
   const segments = INTELLIGENCE_TYPES.map((type) => {
     const flex = type === primary ? 3 : type === secondary ? 2 : 1;
-    return `<span data-type="${type}" style="flex:${flex};background:${STRIP_COLORS[type]}"></span>`;
+    return `<span data-type="${type}" style="flex:${flex};background:${TYPE_COLORS[type]}"></span>`;
   }).join("");
   return `<div class="talent-strip">${segments}</div>`;
 }
@@ -160,6 +150,9 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
   .page > * { position: relative; }
   .page:last-child { page-break-after: auto; }
+  .closing-page {
+    padding-bottom: 54mm;
+  }
   .talent-strip {
     display: flex;
     gap: 2mm;
@@ -212,32 +205,30 @@ export function renderReportHtml(a: TemplateArgs): string {
     gap: 9mm;
     min-height: 190mm;
   }
-  .section-link {
-    display: flex;
-    justify-content: center;
-    gap: 2mm;
-    margin: 4mm 0;
+  .trail {
+    margin: 1mm 0 0;
   }
-  .section-link span {
-    width: 12mm;
-    height: 2.2mm;
-    border-radius: 999px;
+  .trail svg {
+    display: block;
+    width: 158mm;
+    height: auto;
+    margin: 0 auto;
   }
   .intro-kicker {
-    font-size: 9.6pt;
-    margin-bottom: 3mm;
+    font-size: 11.6pt;
+    margin-bottom: 3.5mm;
   }
   .intro-card {
-    margin-top: 0;
+    margin-top: 1mm;
     background: ${C.panel};
     border: .55mm solid ${C.line};
     border-radius: 7mm;
-    padding: 6mm 7mm;
+    padding: 7mm 8mm;
   }
   .intro-card p {
     margin: 0;
-    font-size: 11.6pt;
-    line-height: 1.5;
+    font-size: 12.4pt;
+    line-height: 1.55;
     color: ${C.ink};
   }
   .photo-frame {
@@ -338,6 +329,9 @@ export function renderReportHtml(a: TemplateArgs): string {
   .talents {
     display: grid;
     gap: 4mm;
+  }
+  .talent-page .talents {
+    gap: 9mm;
   }
   .talent-card {
     display: grid;
@@ -463,12 +457,17 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
   .advice-row p { color: ${C.muted}; }
   .future-card {
+    position: absolute;
+    left: 12.5mm;
+    right: 12.5mm;
+    bottom: 12.5mm;
     display: grid;
     grid-template-columns: 1fr 52mm;
     gap: 5mm;
     align-items: center;
-    margin-top: 6mm;
+    margin-top: 0;
     padding: 4mm 6mm;
+    min-height: 34mm;
     border-radius: 7mm;
     background: linear-gradient(135deg, ${C.navy} 0%, ${C.navySoft} 58%, ${C.green} 100%);
     color: #fff;
@@ -556,18 +555,28 @@ export function renderReportHtml(a: TemplateArgs): string {
   </header>
   <h2>Множинний інтелект за методикою Говарда Гарднера</h2>
   <div class="chart-box chart-wide">${a.radarSvg}</div>
-  <div class="section-link">
-    <span style="background:${C.orange}"></span>
-    <span style="background:${C.yellow}"></span>
-    <span style="background:${C.sky}"></span>
+  <div class="trail">
+    <svg viewBox="0 0 760 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M380 10 C 470 34, 310 36, 240 54 C 200 64, 168 66, 146 72"
+        fill="none" stroke="${C.navySoft}" stroke-width="3.6"
+        stroke-linecap="round" stroke-dasharray="0.5 11"/>
+      <circle cx="380" cy="10" r="5.5" fill="${TYPE_COLORS[r.primaryType]}" stroke="#FFFFFF" stroke-width="1.6"/>
+      <path d="M447 16 l3.2 7.8 7.8 3.2 -7.8 3.2 -3.2 7.8 -3.2 -7.8 -7.8 -3.2 7.8 -3.2 z" fill="${C.yellow}"/>
+      <path d="M300 34 l2.6 6.4 6.4 2.6 -6.4 2.6 -2.6 6.4 -2.6 -6.4 -6.4 -2.6 6.4 -2.6 z" fill="${C.sky}"/>
+      <path d="M212 52 l2.2 5.4 5.4 2.2 -5.4 2.2 -2.2 5.4 -2.2 -5.4 -5.4 -2.2 5.4 -2.2 z" fill="${C.green}"/>
+      <text x="468" y="58" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif"
+        font-size="13" font-style="italic" fill="${C.muted}">стежка від карти талантів до пояснення</text>
+      <path d="M138 58 c-9 0 -16 7 -16 16 c0 11 16 24 16 24 c0 0 16 -13 16 -24 c0 -9 -7 -16 -16 -16 z" fill="${C.orange}"/>
+      <circle cx="138" cy="74" r="5.5" fill="#FFFFFF"/>
+    </svg>
   </div>
   <div class="intro-card">
-    <p class="kicker intro-kicker">Слово від команди WestCamp</p>
+    <p class="kicker intro-kicker">★ Слово від команди WestCamp</p>
     <p>${esc(INTRO_TEXT)}</p>
   </div>
 </section>
 
-<section class="page">
+<section class="page talent-page">
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
@@ -580,7 +589,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   </div>
 </section>
 
-<section class="page">
+<section class="page closing-page">
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>

@@ -13,9 +13,14 @@ describe("renderRadarSvg", () => {
       expect(svg).toContain(label);
     }
   });
-  it("marks highlighted axes with accent color", () => {
-    const accent = "#1FB6A6";
+  it("paints the profile in the primary type's header color", () => {
     const svg = renderRadarSvg(["musical"]);
-    expect(svg).toContain(accent);
+    expect(svg).toContain('stroke="#5BC0EB"'); // musical = sky, як у смужці хедера
+    expect(svg).not.toContain("#1FB6A6");
+  });
+  it("marks each highlighted axis with its own header color", () => {
+    const svg = renderRadarSvg(["kinesthetic", "intrapersonal"]);
+    expect(svg).toContain('stroke="#2F8A57"'); // полігон у кольорі головного (green)
+    expect(svg).toContain('fill="#13294B"');   // вершина другого типу (navy)
   });
 });

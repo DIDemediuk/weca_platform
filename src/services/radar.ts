@@ -1,4 +1,5 @@
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
+import { TYPE_COLORS } from "./typeColors.js";
 
 const ACCENT = "#1FB6A6";
 const MUTED = "#C9D6CC";
@@ -21,9 +22,9 @@ const FS = 12;    // font-size for single-line labels (px in SVG coordinates)
 const FS2 = 11;   // font-size for two-line labels
 const LH = 14;   // line-height spacing for two-line (px)
 
-function makeLabel(lx: number, ly: number, cx: number, lines: [string, string?], isHi: boolean): string {
-  const color = isHi ? ACCENT : "#8A9E94";
-  const weight = isHi ? "800" : "500";
+function makeLabel(lx: number, ly: number, cx: number, lines: [string, string?], hiColor?: string): string {
+  const color = hiColor ?? "#8A9E94";
+  const weight = hiColor ? "800" : "500";
   const dx = lx - cx;
   const anchor = Math.abs(dx) < 30 ? "middle" : dx > 0 ? "start" : "end";
 
@@ -74,18 +75,21 @@ export function renderRadarSvg(highlighted: IntelligenceType[]): string {
     spokes += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${GRID}" stroke-width="1"/>`;
   });
 
+  // Колір головного типу домінує: ним малюється весь профіль дитини.
+  const primaryColor = highlighted.length > 0 ? TYPE_COLORS[highlighted[0]] : ACCENT;
+
   // Data polygon
   const dataPts = INTELLIGENCE_TYPES.map((type, i) =>
     point(i, highlighted.includes(type) ? hiLevel : baseLevel).join(",")
   ).join(" ");
-  const polygon = `<polygon points="${dataPts}" fill="${ACCENT}33" stroke="${ACCENT}" stroke-width="2.5"/>`;
+  const polygon = `<polygon points="${dataPts}" fill="${primaryColor}26" stroke="${primaryColor}" stroke-width="2.5"/>`;
 
-  // Dots on highlighted vertices
+  // Dots on highlighted vertices, each in its own header color
   let dots = "";
   INTELLIGENCE_TYPES.forEach((type, i) => {
     if (!highlighted.includes(type)) return;
     const [x, y] = point(i, hiLevel);
-    dots += `<circle cx="${x}" cy="${y}" r="5" fill="${ACCENT}"/>`;
+    dots += `<circle cx="${x}" cy="${y}" r="5.5" fill="${TYPE_COLORS[type]}" stroke="#FFFFFF" stroke-width="1.6"/>`;
   });
 
   // Axis tip markers and text labels
@@ -94,10 +98,10 @@ export function renderRadarSvg(highlighted: IntelligenceType[]): string {
     const isHi = highlighted.includes(type);
     // Small circle at axis tip
     const [tx, ty] = point(i, 1);
-    labels += `<circle cx="${tx}" cy="${ty}" r="3.5" fill="${isHi ? ACCENT : MUTED}" stroke="${isHi ? ACCENT : GRID}" stroke-width="1"/>`;
+    labels += `<circle cx="${tx}" cy="${ty}" r="3.5" fill="${isHi ? TYPE_COLORS[type] : MUTED}" stroke="${isHi ? TYPE_COLORS[type] : GRID}" stroke-width="1"/>`;
     // Full-name label, kept inside the SVG safe area.
     const [lx, ly] = point(i, 1.52);
-    labels += makeLabel(lx, ly, cx, LABELS[i], isHi);
+    labels += makeLabel(lx, ly, cx, LABELS[i], isHi ? TYPE_COLORS[type] : undefined);
   });
 
   return (
