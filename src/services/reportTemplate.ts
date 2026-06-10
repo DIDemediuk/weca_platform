@@ -429,8 +429,6 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
   .parent-card {
     padding: 5.2mm;
-    min-height: 52mm;
-    max-height: 59mm;
     overflow: hidden;
   }
   .advice-row {
