@@ -15,9 +15,11 @@ export interface IntelligenceContent {
   type: IntelligenceType;
   title: string;        // Ukrainian display name
   tagline: string;      // one warm line
-  strengths: string;    // paragraph
+  strengths: string;    // paragraph; may contain {name} placeholder
   inCamp: string;       // how it shows in camp
   parentAdvice: string; // how to support at home
+  hobbies: string;      // hobbies that grow this intelligence
+  professions: string;  // future professions that fit
 }
 
 export interface ReportInput {

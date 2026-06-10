@@ -4,11 +4,13 @@ import type { IntelligenceContent, IntelligenceType } from "../domain/types.js";
 interface Row {
   type: string; title: string; tagline: string;
   strengths: string; in_camp: string; parent_advice: string;
+  hobbies: string; professions: string;
 }
 const toContent = (r: Row): IntelligenceContent => ({
   type: r.type as IntelligenceType,
   title: r.title, tagline: r.tagline, strengths: r.strengths,
   inCamp: r.in_camp, parentAdvice: r.parent_advice,
+  hobbies: r.hobbies, professions: r.professions,
 });
 
 export function getIntelligence(db: DB, type: IntelligenceType): IntelligenceContent {
@@ -24,6 +26,7 @@ export function listIntelligences(db: DB): IntelligenceContent[] {
 export function updateIntelligence(db: DB, c: IntelligenceContent): void {
   db.prepare(
     `UPDATE intelligences SET title=@title, tagline=@tagline, strengths=@strengths,
-     in_camp=@inCamp, parent_advice=@parentAdvice WHERE type=@type`
+     in_camp=@inCamp, parent_advice=@parentAdvice, hobbies=@hobbies, professions=@professions
+     WHERE type=@type`
   ).run(c);
 }

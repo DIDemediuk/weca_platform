@@ -274,6 +274,8 @@
           h("label", null, "Сильні сторони", h("textarea", { name: "strengths", rows: 4, defaultValue: current.strengths })),
           h("label", null, "У таборі", h("textarea", { name: "inCamp", rows: 4, defaultValue: current.inCamp })),
           h("label", null, "Поради батькам", h("textarea", { name: "parentAdvice", rows: 4, defaultValue: current.parentAdvice })),
+          h("label", null, "Хобі, які розвивають", h("textarea", { name: "hobbies", rows: 2, defaultValue: current.hobbies })),
+          h("label", null, "Професії майбутнього", h("textarea", { name: "professions", rows: 2, defaultValue: current.professions })),
           h("button", { className: "primary-action", type: "submit" }, "Зберегти опис")
         )
       )

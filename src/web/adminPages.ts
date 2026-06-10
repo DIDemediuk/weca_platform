@@ -42,6 +42,8 @@ export function adminContentPage(secret: string, items: IntelligenceContent[]): 
       <label>Сильні сторони<textarea name="strengths" rows="3">${esc(c.strengths)}</textarea></label>
       <label>У таборі<textarea name="inCamp" rows="3">${esc(c.inCamp)}</textarea></label>
       <label>Поради батькам<textarea name="parentAdvice" rows="3">${esc(c.parentAdvice)}</textarea></label>
+      <label>Хобі, які розвивають<textarea name="hobbies" rows="2">${esc(c.hobbies)}</textarea></label>
+      <label>Професії майбутнього<textarea name="professions" rows="2">${esc(c.professions)}</textarea></label>
       <button type="submit">Зберегти</button>
     </form>`
   ).join("<hr>");

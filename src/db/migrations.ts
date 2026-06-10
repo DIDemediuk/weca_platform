@@ -5,7 +5,9 @@ CREATE TABLE IF NOT EXISTS intelligences (
   tagline TEXT NOT NULL,
   strengths TEXT NOT NULL,
   in_camp TEXT NOT NULL,
-  parent_advice TEXT NOT NULL
+  parent_advice TEXT NOT NULL,
+  hobbies TEXT NOT NULL DEFAULT '',
+  professions TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS shifts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

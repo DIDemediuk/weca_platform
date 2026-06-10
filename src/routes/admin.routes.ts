@@ -35,6 +35,7 @@ export async function adminRoutes(app: FastifyInstance) {
       updateIntelligence(db, {
         type, title: b.title, tagline: b.tagline, strengths: b.strengths,
         inCamp: b.inCamp, parentAdvice: b.parentAdvice,
+        hobbies: b.hobbies ?? "", professions: b.professions ?? "",
       });
       return reply.redirect(`/admin/${cfg.adminSecret}/content`);
     }
