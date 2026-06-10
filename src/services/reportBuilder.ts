@@ -39,7 +39,9 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
   const wovenExample = await weave({
     childName: input.childName,
     example: input.example,
+    primaryType: input.primaryType,
     primaryTitle: primary.title,
+    secondaryType: input.secondaryType,
     secondaryTitle: secondary?.title,
     apiKey: deps.deepseekApiKey,
   });

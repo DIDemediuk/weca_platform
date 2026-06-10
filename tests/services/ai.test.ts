@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { weaveExample } from "../../src/services/ai.js";
+import { buildWeavePrompt, weaveExample } from "../../src/services/ai.js";
 
 const args = {
   childName: "Артем",
   example: "Взяв капітанство у квесті та привів команду до перемоги.",
+  primaryType: "kinesthetic" as const,
   primaryTitle: "Тілесно-кінестетичний інтелект",
+  secondaryType: "interpersonal" as const,
   secondaryTitle: "Міжособистісний інтелект",
 };
 
@@ -15,6 +17,16 @@ describe("weaveExample", () => {
     const out = await weaveExample({ ...args, apiKey: "" });
     expect(out).toContain("Артем");
     expect(out).toContain("капітанство");
+    expect(out).toContain("не сухий тест");
+  });
+
+  it("builds a richer, warmer prompt with knowledge context", () => {
+    const prompt = buildWeavePrompt({ ...args, apiKey: "key" });
+    expect(prompt).toContain("База знань для інтерпретації");
+    expect(prompt).toContain("спорт");
+    expect(prompt).toContain("команд");
+    expect(prompt).toContain("без сюсюкання");
+    expect(prompt).toContain("Не використовуй канцелярит");
   });
 
   it("returns AI content when api responds", async () => {
