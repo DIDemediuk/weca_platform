@@ -46,7 +46,7 @@ describe("renderReportHtml", () => {
   });
   it("renders the talent strip on every page", () => {
     const count = html.split('class="talent-strip"').length - 1;
-    expect(count).toBe(3);
+    expect(count).toBe(4);
   });
   it("sizes segments by talent: primary 3x, secondary 2x, rest 1x", () => {
     expect(html).toContain('data-type="kinesthetic" style="flex:3');
@@ -66,5 +66,29 @@ describe("renderReportHtml", () => {
   it("drops the old gradient stripe pseudo-elements", () => {
     expect(html).not.toContain(".page::before");
     expect(html).not.toContain(".page::after");
+  });
+  it("renders four pages", () => {
+    expect(html.split('<section class="page').length - 1).toBe(4);
+  });
+  it("shows the intro letter on the cover", () => {
+    expect(html).toContain("Шановні батьки");
+    expect(html).toContain("Гарднера");
+  });
+  it("substitutes the child name into descriptions", () => {
+    expect(html).not.toContain("{name}");
+    expect(html).toContain("Артем пізнає світ через рух");
+  });
+  it("renders the talent bridge on the primary talent page", () => {
+    expect(html).toContain("Місток про Артема.");
+  });
+  it("shows hobbies and professions for both talents", () => {
+    expect(html).toContain("Хобі, які розвивають");
+    expect(html).toContain("Професії майбутнього");
+    expect(html).toContain(byType("kinesthetic").hobbies);
+    expect(html).toContain(byType("interpersonal").professions);
+  });
+  it("does not duplicate parent advice", () => {
+    const advice = byType("kinesthetic").parentAdvice;
+    expect(html.split(advice).length - 1).toBe(1);
   });
 });

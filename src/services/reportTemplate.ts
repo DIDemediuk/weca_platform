@@ -48,6 +48,9 @@ const LOGO_SRC = `data:image/png;base64,${readFileSync(
   new URL("../public/brand/westcamp-kids-logo.png", import.meta.url)
 ).toString("base64")}`;
 
+const INTRO_TEXT =
+  "Шановні батьки, вас вітає команда WestCamp Kids! Протягом зміни ми приділяємо багато уваги розвитку й дослідженню особистості кожної дитини — це допомагає розкривати її приховані таланти, мрії та можливості. Цієї зміни ми провели кілька активностей, у яких визначали тип інтелекту за методикою Говарда Гарднера: вона підказує, який спосіб сприйняття інформації пасує дитині найбільше. Результати засновані на особистих спостереженнях та аналізі нашої команди.";
+
 function formatDate(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
@@ -71,26 +74,53 @@ function shortText(value: string, max = 260): string {
   return value.length > max ? `${value.slice(0, max - 1).trim()}...` : value;
 }
 
-function typeCard(c: IntelligenceContent, index: 1 | 2): string {
-  return `<article class="talent-card ${index === 2 ? "secondary-talent" : ""}">
-    <div class="talent-number">0${index}</div>
+function withName(text: string, name: string): string {
+  return esc(text).split("{name}").join(esc(name));
+}
+
+function primaryCard(c: IntelligenceContent, childName: string, bridge: string): string {
+  return `<article class="talent-card">
+    <div class="talent-number">01</div>
     <div>
       <h3>${esc(c.title)}</h3>
       <p class="tagline">${esc(c.tagline)}</p>
-      <p>${esc(shortText(c.strengths, index === 1 ? 285 : 225))}</p>
+      <p>${withName(c.strengths, childName)}</p>
+      <div class="bridge"><strong>Чому ми це побачили</strong><p>${esc(bridge)}</p></div>
       <div class="mini-grid">
-        <div><strong>Суперсила в команді</strong><span>${esc(shortText(c.inCamp, index === 1 ? 145 : 135))}</span></div>
-        ${index === 1 ? `<div><strong>Зона росту</strong><span>Переносити сильну сторону у команду, навчання та щоденні рішення.</span></div>` : ""}
+        <div><strong>Як проявлялось у таборі</strong><span>${esc(c.inCamp)}</span></div>
+        <div><strong>Зона росту</strong><span>Переносити сильну сторону у команду, навчання та щоденні рішення.</span></div>
       </div>
     </div>
   </article>`;
 }
 
+function secondaryCard(c: IntelligenceContent, childName: string): string {
+  return `<article class="talent-card secondary-talent">
+    <div class="talent-number">02</div>
+    <div>
+      <h3>${esc(c.title)}</h3>
+      <p class="tagline">${esc(c.tagline)}</p>
+      <p>${withName(c.strengths, childName)}</p>
+      <div class="mini-grid">
+        <div><strong>Як проявлялось у таборі</strong><span>${esc(c.inCamp)}</span></div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function futureBlock(title: string, primary: IntelligenceContent, secondary: IntelligenceContent, field: "hobbies" | "professions"): string {
+  const rows = [primary, secondary]
+    .filter((c) => c[field])
+    .map((c) => `<div class="future-row"><strong>${esc(c.title)}</strong><span>${esc(c[field])}</span></div>`)
+    .join("");
+  return `<article class="parent-card future-list"><h3>${esc(title)}</h3>${rows}</article>`;
+}
+
 function adviceCard(title: string, first: IntelligenceContent, second: IntelligenceContent): string {
   return `<article class="parent-card">
     <h3>${esc(title)}</h3>
-    <div class="advice-row"><strong>${esc(first.title)}</strong><p>${esc(shortText(first.parentAdvice, 195))}</p></div>
-    <div class="advice-row"><strong>${esc(second.title)}</strong><p>${esc(shortText(second.parentAdvice, 195))}</p></div>
+    <div class="advice-row"><strong>${esc(first.title)}</strong><p>${esc(shortText(first.parentAdvice, 260))}</p></div>
+    <div class="advice-row"><strong>${esc(second.title)}</strong><p>${esc(shortText(second.parentAdvice, 260))}</p></div>
   </article>`;
 }
 
@@ -173,7 +203,20 @@ export function renderReportHtml(a: TemplateArgs): string {
   .cover-page .hero {
     grid-template-columns: 82mm 1fr;
     gap: 9mm;
-    min-height: 190mm;
+    min-height: 150mm;
+  }
+  .intro-card {
+    margin-top: 7mm;
+    background: ${C.panel};
+    border: .55mm solid ${C.line};
+    border-radius: 7mm;
+    padding: 5.5mm 6mm;
+  }
+  .intro-card p {
+    margin: 0;
+    font-size: 10.8pt;
+    line-height: 1.42;
+    color: ${C.ink};
   }
   .photo-frame {
     position: relative;
@@ -277,7 +320,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     grid-template-columns: 15mm 1fr;
     gap: 4mm;
     padding: 4.4mm;
-    min-height: 63mm;
     overflow: hidden;
   }
   .talent-card h3 {
@@ -285,9 +327,45 @@ export function renderReportHtml(a: TemplateArgs): string {
     margin-bottom: 1mm;
   }
   .talent-card p {
-    font-size: 11.6pt;
-    line-height: 1.24;
+    font-size: 11pt;
+    line-height: 1.3;
     margin-bottom: 1.6mm;
+  }
+  .bridge {
+    margin-top: 3mm;
+    border-left: 2mm solid ${C.orange};
+    border-radius: 2mm;
+    background: rgba(255, 209, 102, .18);
+    padding: 3mm 4mm;
+  }
+  .bridge strong {
+    display: block;
+    color: ${C.navy};
+    font-size: 10.2pt;
+    margin-bottom: 1mm;
+  }
+  .bridge p {
+    margin: 0;
+    font-size: 10.6pt;
+    line-height: 1.3;
+    color: ${C.ink};
+  }
+  .future-list { min-height: auto; max-height: none; }
+  .future-row {
+    border-top: .3mm solid ${C.line};
+    padding-top: 2.6mm;
+    margin-top: 2.6mm;
+  }
+  .future-row strong {
+    display: block;
+    color: ${C.navy};
+    font-size: 10.2pt;
+    margin-bottom: 1mm;
+  }
+  .future-row span {
+    color: ${C.muted};
+    font-size: 10.4pt;
+    line-height: 1.3;
   }
   .secondary-talent {
     opacity: .96;
@@ -440,7 +518,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     <div>
       <p class="kicker">Карта талантів та емоційного інтелекту</p>
       <h1>${esc(r.childName)}</h1>
-      <p>Індивідуальний звіт для батьків про сильні сторони, командні прояви та наступні кроки розвитку дитини.</p>
       <div class="quote">
         <div class="quote-mark">“</div>
         <p>${esc(r.wovenExample)}</p>
@@ -448,6 +525,7 @@ export function renderReportHtml(a: TemplateArgs): string {
       </div>
     </div>
   </div>
+  <div class="intro-card"><p>${esc(INTRO_TEXT)}</p></div>
   <div class="footer-label">Adventure · Education · Safety</div>
 </section>
 
@@ -461,9 +539,24 @@ export function renderReportHtml(a: TemplateArgs): string {
   <div class="chart-layout">
     <div class="chart-box">${a.radarSvg}</div>
     <div class="talents">
-      ${typeCard(a.primary, 1)}
-      ${typeCard(secondary, 2)}
+      ${primaryCard(a.primary, r.childName, r.talentBridge)}
     </div>
+  </div>
+</section>
+
+<section class="page">
+  ${strip}
+  <header class="header">
+    <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
+    <div class="meta">${esc(shiftName)}</div>
+  </header>
+  <h2>Другий талант і погляд у майбутнє</h2>
+  <div class="talents">
+    ${secondaryCard(secondary, r.childName)}
+  </div>
+  <div class="parents-grid">
+    ${futureBlock("Хобі, які розвивають", a.primary, secondary, "hobbies")}
+    ${futureBlock("Професії майбутнього", a.primary, secondary, "professions")}
   </div>
 </section>
 
@@ -476,8 +569,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   <h2>Як взаємодіяти вдома</h2>
   <p>Ці підказки допоможуть підтримати природні сильні сторони дитини після табору і м'яко перевести їх у щоденні звички.</p>
   <div class="parents-grid">
-    ${adviceCard("Ключі мотивації", a.primary, secondary)}
-    ${adviceCard("Рекомендації на осінь та хобі", a.primary, secondary)}
+    ${adviceCard("Прикладні поради", a.primary, secondary)}
   </div>
   <div class="future-card">
     <div>
