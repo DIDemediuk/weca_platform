@@ -212,8 +212,23 @@ export function renderReportHtml(a: TemplateArgs): string {
     gap: 9mm;
     min-height: 190mm;
   }
+  .section-link {
+    display: flex;
+    justify-content: center;
+    gap: 2mm;
+    margin: 4mm 0;
+  }
+  .section-link span {
+    width: 12mm;
+    height: 2.2mm;
+    border-radius: 999px;
+  }
+  .intro-kicker {
+    font-size: 9.6pt;
+    margin-bottom: 3mm;
+  }
   .intro-card {
-    margin-top: 6mm;
+    margin-top: 0;
     background: ${C.panel};
     border: .55mm solid ${C.line};
     border-radius: 7mm;
@@ -541,7 +556,15 @@ export function renderReportHtml(a: TemplateArgs): string {
   </header>
   <h2>Множинний інтелект за методикою Говарда Гарднера</h2>
   <div class="chart-box chart-wide">${a.radarSvg}</div>
-  <div class="intro-card"><p>${esc(INTRO_TEXT)}</p></div>
+  <div class="section-link">
+    <span style="background:${C.orange}"></span>
+    <span style="background:${C.yellow}"></span>
+    <span style="background:${C.sky}"></span>
+  </div>
+  <div class="intro-card">
+    <p class="kicker intro-kicker">Слово від команди WestCamp</p>
+    <p>${esc(INTRO_TEXT)}</p>
+  </div>
 </section>
 
 <section class="page">
