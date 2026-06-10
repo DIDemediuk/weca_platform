@@ -132,7 +132,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     padding: 3mm;
     background: ${C.panel};
     border: 1.2mm solid ${C.orange};
-    box-shadow: 0 10mm 22mm rgba(19, 41, 75, .16);
   }
   .photo-frame img {
     width: 100%;
@@ -179,7 +178,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     border-left: 1.5mm solid ${C.orange};
     border-radius: 4mm;
     padding: 5.5mm;
-    box-shadow: 0 5mm 18mm rgba(19, 41, 75, .08);
   }
   .quote-mark { color: ${C.orange}; font-size: 28pt; line-height: .6; font-weight: 900; }
   .signature { color: ${C.green}; font-weight: 800; margin-top: 4mm; }
@@ -193,7 +191,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     background: ${C.panel};
     border: .35mm solid ${C.line};
     border-radius: 5mm;
-    box-shadow: 0 5mm 16mm rgba(19, 41, 75, .07);
   }
   .chart-box {
     width: 124mm;
