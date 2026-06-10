@@ -5,7 +5,7 @@ import { listReports, getReport } from "../db/reports.repo.js";
 import { listIntelligences, getIntelligence, updateIntelligence } from "../db/intelligences.repo.js";
 import { renderRadarSvg } from "../services/radar.js";
 import { renderReportHtml } from "../services/reportTemplate.js";
-import { renderPdf } from "../services/pdf.js";
+import { renderPdf, downscalePhoto } from "../services/pdf.js";
 import { imageFileToDataUri } from "../services/imageSrc.js";
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 
@@ -50,7 +50,7 @@ export async function adminRoutes(app: FastifyInstance) {
       const primary = getIntelligence(db, report.primaryType);
       const secondary = report.secondaryType ? getIntelligence(db, report.secondaryType) : undefined;
       const highlighted = [report.primaryType, report.secondaryType].filter(Boolean) as IntelligenceType[];
-      const photoSrc = await imageFileToDataUri(report.photoPath);
+      const photoSrc = await downscalePhoto(await imageFileToDataUri(report.photoPath));
       const html = renderReportHtml({
         report: { ...report, photoPath: photoSrc },
         primary, secondary, radarSvg: renderRadarSvg(highlighted),

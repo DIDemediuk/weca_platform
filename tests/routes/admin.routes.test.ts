@@ -6,6 +6,7 @@ import { getIntelligence } from "../../src/db/intelligences.repo.js";
 vi.mock("../../src/services/pdf.js", () => ({
   renderPdf: vi.fn(async () => Buffer.from("%PDF-1.4 fake")),
   closeBrowser: vi.fn(async () => {}),
+  downscalePhoto: vi.fn(async (s: string) => s),
 }));
 
 const cfg = {

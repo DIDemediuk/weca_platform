@@ -4,7 +4,7 @@ import { insertReport } from "../db/reports.repo.js";
 import { renderRadarSvg } from "./radar.js";
 import { renderReportHtml } from "./reportTemplate.js";
 import { weaveReport, type WeaveArgs, type WeaveResult } from "./ai.js";
-import { renderPdf } from "./pdf.js";
+import { renderPdf, downscalePhoto } from "./pdf.js";
 import { imageFileToDataUri } from "./imageSrc.js";
 import type { Report, IntelligenceType } from "../domain/types.js";
 import type { ReportInputParsed } from "../domain/validation.js";
@@ -29,7 +29,7 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
   const render = deps.render ?? renderPdf;
   const idGen = deps.idGen ?? (() => Math.random().toString(36).slice(2, 10));
   const now = deps.now ?? (() => new Date());
-  const photoToSrc = deps.photoToSrc ?? imageFileToDataUri;
+  const photoToSrc = deps.photoToSrc ?? (async (p: string) => downscalePhoto(await imageFileToDataUri(p)));
 
   const primary = getIntelligence(deps.db, input.primaryType);
   const secondary = input.secondaryType

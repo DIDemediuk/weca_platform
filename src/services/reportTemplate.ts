@@ -148,10 +148,17 @@ export function renderReportHtml(a: TemplateArgs): string {
     overflow: hidden;
     padding: 12.5mm;
     page-break-after: always;
-    background:
-      linear-gradient(135deg, rgba(255, 209, 102, .22) 0 8mm, transparent 8mm 18mm),
-      linear-gradient(180deg, #FFFDF7 0%, ${C.paper} 46%, #F3FFF8 100%);
+    background: ${C.paper};
   }
+  .page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top: 14mm solid #FFF3D7;
+    border-right: 14mm solid transparent;
+  }
+  .page > * { position: relative; }
   .page:last-child { page-break-after: auto; }
   .talent-strip {
     display: flex;
@@ -188,7 +195,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     color: ${C.navy};
     font-size: 10.4pt;
     line-height: 1.35;
-    background: rgba(255,255,255,.78);
+    background: #FFFFFF;
     border: .35mm solid ${C.line};
     border-radius: 999px;
     padding: 2.4mm 4.2mm;
@@ -283,7 +290,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     border-left: 2mm solid ${C.green};
     border-radius: 7mm;
     padding: 5.5mm;
-    box-shadow: 0 2mm 0 rgba(91, 192, 235, .22);
+    box-shadow: 0 2mm 0 #DBECEC;
   }
   .cover-page .quote {
     margin-top: 7mm;
@@ -301,7 +308,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     background: ${C.panel};
     border: .45mm solid ${C.line};
     border-radius: 7mm;
-    box-shadow: 0 1.4mm 0 rgba(19, 41, 75, .06);
+    box-shadow: 0 1.4mm 0 #F1ECE2;
   }
   .chart-box {
     width: 101mm;
@@ -335,7 +342,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     margin-top: 3mm;
     border-left: 2mm solid ${C.orange};
     border-radius: 2mm;
-    background: rgba(255, 209, 102, .18);
+    background: #FFF7E3;
     padding: 3mm 4mm;
   }
   .bridge strong {
@@ -366,9 +373,6 @@ export function renderReportHtml(a: TemplateArgs): string {
     color: ${C.muted};
     font-size: 10.4pt;
     line-height: 1.3;
-  }
-  .secondary-talent {
-    opacity: .96;
   }
   .talent-number {
     display: grid;
@@ -451,7 +455,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     color: #fff;
   }
   .future-card h3 { color: #fff; margin-bottom: 2mm; }
-  .future-card p { color: rgba(255,255,255,.82); margin-bottom: 0; }
+  .future-card p { color: #D8DFE8; margin-bottom: 0; }
   .contact-card {
     display: grid;
     justify-items: center;

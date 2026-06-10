@@ -4,6 +4,7 @@ import { buildServer } from "../../src/server.js";
 vi.mock("../../src/services/pdf.js", () => ({
   renderPdf: vi.fn(async () => Buffer.from("%PDF-1.4 fake")),
   closeBrowser: vi.fn(async () => {}),
+  downscalePhoto: vi.fn(async (s: string) => s),
 }));
 vi.mock("../../src/services/ai.js", () => ({
   weaveReport: vi.fn(async () => ({

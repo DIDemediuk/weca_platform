@@ -63,9 +63,11 @@ describe("renderReportHtml", () => {
     expect(solo).toContain('data-type="kinesthetic" style="flex:3');
     expect(solo).toContain('data-type="interpersonal" style="flex:1');
   });
-  it("drops the old gradient stripe pseudo-elements", () => {
-    expect(html).not.toContain(".page::before");
+  it("uses no heavy gradients on page backgrounds (PDF scroll performance)", () => {
+    expect(html).not.toMatch(/linear-gradient\(\s*90deg/);
+    expect(html).not.toContain("linear-gradient(180deg");
     expect(html).not.toContain(".page::after");
+    expect(html).not.toContain("rgba(");
   });
   it("renders four pages", () => {
     expect(html.split('<section class="page').length - 1).toBe(4);
