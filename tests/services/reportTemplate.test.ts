@@ -72,9 +72,9 @@ describe("renderReportHtml", () => {
   it("renders four pages", () => {
     expect(html.split('<section class="page').length - 1).toBe(4);
   });
-  it("shows the intro letter on the cover", () => {
+  it("shows the intro letter after the radar chart", () => {
     expect(html).toContain("Шановні батьки");
-    expect(html).toContain("Гарднера");
+    expect(html.indexOf("Шановні батьки")).toBeGreaterThan(html.indexOf("<svg>RADAR</svg>"));
   });
   it("substitutes the child name into descriptions", () => {
     expect(html).not.toContain("{name}");

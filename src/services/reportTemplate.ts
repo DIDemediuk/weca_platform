@@ -210,19 +210,19 @@ export function renderReportHtml(a: TemplateArgs): string {
   .cover-page .hero {
     grid-template-columns: 82mm 1fr;
     gap: 9mm;
-    min-height: 150mm;
+    min-height: 190mm;
   }
   .intro-card {
-    margin-top: 7mm;
+    margin-top: 6mm;
     background: ${C.panel};
     border: .55mm solid ${C.line};
     border-radius: 7mm;
-    padding: 5.5mm 6mm;
+    padding: 6mm 7mm;
   }
   .intro-card p {
     margin: 0;
-    font-size: 10.8pt;
-    line-height: 1.42;
+    font-size: 11.6pt;
+    line-height: 1.5;
     color: ${C.ink};
   }
   .photo-frame {
@@ -318,6 +318,8 @@ export function renderReportHtml(a: TemplateArgs): string {
     background: #F8FDFF;
   }
   .chart-box svg { width: 93mm; height: auto; display: block; margin: 0 auto; }
+  .chart-box.chart-wide { width: 100%; }
+  .chart-box.chart-wide svg { width: 150mm; }
   .talents {
     display: grid;
     gap: 4mm;
@@ -429,7 +431,11 @@ export function renderReportHtml(a: TemplateArgs): string {
     display: grid;
     grid-template-columns: 1fr;
     gap: 5.5mm;
-    margin-top: 7mm;
+    margin-top: 4.5mm;
+  }
+  .split-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4.5mm;
   }
   .parent-card {
     padding: 5.2mm;
@@ -442,43 +448,40 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
   .advice-row p { color: ${C.muted}; }
   .future-card {
-    position: absolute;
-    left: 12.5mm;
-    right: 12.5mm;
-    bottom: 12.5mm;
     display: grid;
-    grid-template-columns: 1fr 46mm;
+    grid-template-columns: 1fr 52mm;
     gap: 5mm;
     align-items: center;
-    padding: 6mm;
+    margin-top: 6mm;
+    padding: 4mm 6mm;
+    border-radius: 7mm;
     background: linear-gradient(135deg, ${C.navy} 0%, ${C.navySoft} 58%, ${C.green} 100%);
     color: #fff;
   }
-  .future-card h3 { color: #fff; margin-bottom: 2mm; }
-  .future-card p { color: #D8DFE8; margin-bottom: 0; }
+  .future-card h3 { color: #fff; margin-bottom: 1.5mm; font-size: 17pt; }
+  .future-card p { color: #D8DFE8; margin-bottom: 0; font-size: 12.6pt; }
+  .home-title { margin-top: 6mm; margin-bottom: 0; }
   .contact-card {
     display: grid;
     justify-items: center;
-    gap: 1.8mm;
+    gap: 1.2mm;
     border-radius: 5mm;
     background: #fff;
     color: ${C.navy};
-    font-size: 8.8pt;
     font-weight: 900;
-    padding: 4mm;
+    padding: 3mm;
     text-align: center;
   }
   .contact-logo {
     display: block;
-    width: 22mm;
+    width: 18mm;
     height: auto;
-    margin-bottom: .5mm;
   }
   .contact-card strong {
     display: block;
     color: ${C.navy};
-    font-size: 9pt;
-    line-height: 1.18;
+    font-size: 10.4pt;
+    line-height: 1.2;
   }
   .footer-label {
     position: absolute;
@@ -527,7 +530,6 @@ export function renderReportHtml(a: TemplateArgs): string {
       </div>
     </div>
   </div>
-  <div class="intro-card"><p>${esc(INTRO_TEXT)}</p></div>
   <div class="footer-label">Adventure · Education · Safety</div>
 </section>
 
@@ -538,12 +540,8 @@ export function renderReportHtml(a: TemplateArgs): string {
     <div class="meta">${esc(shiftName)}</div>
   </header>
   <h2>Множинний інтелект за методикою Говарда Гарднера</h2>
-  <div class="chart-layout">
-    <div class="chart-box">${a.radarSvg}</div>
-    <div class="talents">
-      ${primaryCard(a.primary, r.childName, r.talentBridge)}
-    </div>
-  </div>
+  <div class="chart-box chart-wide">${a.radarSvg}</div>
+  <div class="intro-card"><p>${esc(INTRO_TEXT)}</p></div>
 </section>
 
 <section class="page">
@@ -552,13 +550,10 @@ export function renderReportHtml(a: TemplateArgs): string {
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">${esc(shiftName)}</div>
   </header>
-  <h2>Другий талант і погляд у майбутнє</h2>
+  <h2>Найяскравіші таланти дитини</h2>
   <div class="talents">
+    ${primaryCard(a.primary, r.childName, r.talentBridge)}
     ${secondaryCard(secondary, r.childName)}
-  </div>
-  <div class="parents-grid">
-    ${futureBlock("Хобі, які розвивають", a.primary, secondary, "hobbies")}
-    ${futureBlock("Професії майбутнього", a.primary, secondary, "professions")}
   </div>
 </section>
 
@@ -568,8 +563,12 @@ export function renderReportHtml(a: TemplateArgs): string {
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta">Для батьків</div>
   </header>
-  <h2>Як взаємодіяти вдома</h2>
-  <p>Ці підказки допоможуть підтримати природні сильні сторони дитини після табору і м'яко перевести їх у щоденні звички.</p>
+  <h2>Погляд у майбутнє</h2>
+  <div class="parents-grid split-grid">
+    ${futureBlock("Хобі, які розвивають", a.primary, secondary, "hobbies")}
+    ${futureBlock("Професії майбутнього", a.primary, secondary, "professions")}
+  </div>
+  <h2 class="home-title">Як взаємодіяти вдома</h2>
   <div class="parents-grid">
     ${adviceCard("Прикладні поради", a.primary, secondary)}
   </div>
