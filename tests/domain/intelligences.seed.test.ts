@@ -14,4 +14,15 @@ describe("intelligence seed", () => {
       expect(item!.parentAdvice.length).toBeGreaterThan(20);
     }
   });
+  it("every strengths text is personalized with {name} and stays gender-neutral", () => {
+    for (const c of SEED_INTELLIGENCES) {
+      expect(c.strengths, c.type).toContain("{name}");
+      expect(c.strengths, c.type).not.toMatch(/вдумлива|зібрав |проявив |обрала |обрав /);
+    }
+  });
+  it("avoids heavy scientific jargon", () => {
+    for (const c of SEED_INTELLIGENCES) {
+      expect(c.strengths, c.type).not.toMatch(/Брока|Верніке|кортизол|Default Mode|нейробіолог/i);
+    }
+  });
 });
