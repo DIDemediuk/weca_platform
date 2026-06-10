@@ -182,7 +182,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     margin-bottom: 2.4mm;
   }
   .quote {
-    margin-top: 7mm;
+    margin-top: 10mm;
     background: ${C.panel};
     border-left: 1.5mm solid ${C.orange};
     border-radius: 4mm;
@@ -197,7 +197,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-layout {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5mm;
+    gap: 10mm;
     align-items: start;
   }
   .chart-box, .talent-card, .parent-card, .future-card {
@@ -214,7 +214,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   .chart-box svg { width: 112mm; height: auto; display: block; margin: 0 auto; }
   .talents {
     display: grid;
-    gap: 4mm;
+    gap: 7mm;
   }
   .talent-card {
     display: grid;
