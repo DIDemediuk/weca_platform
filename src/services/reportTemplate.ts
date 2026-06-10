@@ -124,6 +124,11 @@ export function renderReportHtml(a: TemplateArgs): string {
     align-items: center;
     min-height: 148mm;
   }
+  .cover-page .hero {
+    grid-template-columns: 78mm 1fr;
+    gap: 8mm;
+    min-height: 188mm;
+  }
   .photo-frame {
     position: relative;
     width: 72mm;
@@ -132,6 +137,10 @@ export function renderReportHtml(a: TemplateArgs): string {
     padding: 3mm;
     background: ${C.panel};
     border: 1.2mm solid ${C.orange};
+  }
+  .cover-page .photo-frame {
+    width: 78mm;
+    height: 104mm;
   }
   .photo-frame img {
     width: 100%;
@@ -179,6 +188,10 @@ export function renderReportHtml(a: TemplateArgs): string {
     border-radius: 4mm;
     padding: 5.5mm;
   }
+  .cover-page .quote {
+    margin-top: 9mm;
+    padding: 6.5mm;
+  }
   .quote-mark { color: ${C.orange}; font-size: 28pt; line-height: .6; font-weight: 900; }
   .signature { color: ${C.green}; font-weight: 800; margin-top: 4mm; }
   .chart-layout {
@@ -208,7 +221,7 @@ export function renderReportHtml(a: TemplateArgs): string {
     grid-template-columns: 12mm 1fr;
     gap: 3.5mm;
     padding: 4mm;
-    max-height: 64mm;
+    min-height: 64mm;
     overflow: hidden;
   }
   .talent-card h3 {
@@ -338,7 +351,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   }
 </style></head><body>
 
-<section class="page">
+<section class="page cover-page">
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
     <div class="meta"><strong>${esc(shiftName)}</strong><br>${esc(date)}</div>
