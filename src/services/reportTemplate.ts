@@ -69,16 +69,26 @@ function withName(text: string, name: string): string {
   return esc(text).split("{name}").join(esc(name));
 }
 
+// Експедиційний кросовер з багажником на даху — стиль для 9-12 років, без «іграшкових» пропорцій.
 function roadCar(x: number, y: number, scale = 1, rotate = 0): string {
   return `<g transform="translate(${x} ${y}) rotate(${rotate}) scale(${scale})">
-    <path d="M-16 2 h4 l4 -8 h16 l5 8 h4 c3 0 5 2.5 5 5.5 v7 h-44 v-7 c0 -3 2 -5.5 5 -5.5z" fill="${C.orange}" stroke="${C.navy}" stroke-width="1.35" stroke-linejoin="round"/>
-    <path d="M-6 -4 h11 l4 6 h-17z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width=".9"/>
-    <rect x="-10" y="4" width="21" height="7" rx="2" fill="#FFFFFF"/>
-    <image href="${LOGO_SRC}" x="-15" y="1.2" width="31" height="11" preserveAspectRatio="xMidYMid meet"/>
-    <circle cx="-13" cy="15" r="3.4" fill="${C.navy}"/>
-    <circle cx="14" cy="15" r="3.4" fill="${C.navy}"/>
-    <circle cx="-13" cy="15" r="1.2" fill="#FFFFFF"/>
-    <circle cx="14" cy="15" r="1.2" fill="#FFFFFF"/>
+    <rect x="-13" y="-12.3" width="19" height="1.8" rx=".9" fill="${C.navy}"/>
+    <rect x="-10" y="-14.6" width="6" height="2.2" rx="1" fill="${C.green}"/>
+    <rect x="-2" y="-14.6" width="7" height="2.2" rx="1" fill="${C.yellow}"/>
+    <path d="M-18 1 L-14 -9 Q-13.3 -10.5 -11.5 -10.5 H7 Q8.8 -10.5 9.6 -9 L14 1 z" fill="${C.orange}" stroke="${C.navy}" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M-13.2 -1 L-10 -8.5 H-3 V-1 z" fill="#E8F4FC" stroke="${C.navySoft}" stroke-width=".8"/>
+    <path d="M-0.5 -1 V-8.5 H6.4 L10 -1 z" fill="#E8F4FC" stroke="${C.navySoft}" stroke-width=".8"/>
+    <path d="M-28 14 V4 Q-28 1 -25 1 H20 Q26 1 28 6 V14 Q28 16 25.5 16 H-25.5 Q-28 16 -28 14 z" fill="${C.orange}" stroke="${C.navy}" stroke-width="1.3" stroke-linejoin="round"/>
+    <rect x="-15" y="3.5" width="28" height="10" rx="2" fill="#FFFFFF"/>
+    <image href="${LOGO_SRC}" x="-14" y="4" width="26" height="9" preserveAspectRatio="xMidYMid meet"/>
+    <rect x="26.2" y="4.5" width="2.2" height="3" rx="1" fill="${C.yellow}"/>
+    <rect x="-28.3" y="4.5" width="2" height="3" rx="1" fill="#D9534F"/>
+    <circle cx="-17" cy="16" r="5" fill="${C.navy}"/>
+    <circle cx="-17" cy="16" r="2.1" fill="#D7DEE8"/>
+    <circle cx="-17" cy="16" r=".9" fill="${C.navy}"/>
+    <circle cx="17" cy="16" r="5" fill="${C.navy}"/>
+    <circle cx="17" cy="16" r="2.1" fill="#D7DEE8"/>
+    <circle cx="17" cy="16" r=".9" fill="${C.navy}"/>
   </g>`;
 }
 
@@ -86,12 +96,20 @@ function roadCar(x: number, y: number, scale = 1, rotate = 0): string {
 const ROAD_EXIT = { cover: 132, analytics: 110, talents: 127 };
 const CHECKPOINT = { cover: C.yellow, analytics: C.sky, talents: C.green };
 
-function pennant(x: number, y: number, color: string, label: string): string {
+function pennant(x: number, y: number, color: string): string {
   return `<g transform="translate(${x} ${y})">
     <line x1="0" y1="0" x2="0" y2="-17" stroke="${C.navy}" stroke-width="1.7" stroke-linecap="round"/>
     <path d="M0 -17 L14 -13 L0 -9 z" fill="${color}"/>
     <circle cx="0" cy="0" r="2.1" fill="${C.navy}"/>
-    <text x="4" y="-1" font-family="Trebuchet MS, Arial, sans-serif" font-size="6.4" font-weight="900" fill="${C.navy}" letter-spacing=".5">${label}</text>
+  </g>`;
+}
+
+// Маленький вказівник напрямку: три шеврони вздовж дороги.
+function chevrons(x: number, y: number, angle: number): string {
+  return `<g transform="translate(${x} ${y}) rotate(${angle})" fill="none" stroke="${C.orange}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 0 l4.5 4.5 L0 9"/>
+    <path d="M7 0 l4.5 4.5 L7 9" opacity=".62"/>
+    <path d="M14 0 l4.5 4.5 L14 9" opacity=".32"/>
   </g>`;
 }
 
@@ -112,10 +130,10 @@ function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): strin
     closing: roadCar(97, 226, .7, 2),
   };
   const markers = {
-    cover: `${pennant(178, 40, C.orange, "СТАРТ")}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
+    cover: `<circle cx="178" cy="40" r="2.6" fill="${C.orange}"/>${chevrons(176, 47, 100)}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
     analytics: `<circle cx="${ROAD_EXIT.cover}" cy="0" r="3" fill="${CHECKPOINT.cover}"/><circle cx="${ROAD_EXIT.analytics}" cy="297" r="3" fill="${CHECKPOINT.analytics}"/>`,
     talents: `<circle cx="${ROAD_EXIT.analytics}" cy="0" r="3" fill="${CHECKPOINT.analytics}"/><circle cx="${ROAD_EXIT.talents}" cy="297" r="3" fill="${CHECKPOINT.talents}"/>`,
-    closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green, "ФІНІШ")}`,
+    closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green)}`,
   };
 
   return `<svg class="journey-road journey-${kind}" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
