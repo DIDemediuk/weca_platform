@@ -115,19 +115,24 @@ function chevrons(x: number, y: number, angle: number): string {
 
 function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): string {
   // Старт на обкладинці, фініш на останній сторінці; між сторінками x-координати збігаються.
-  const paths = {
-    cover: `M178 40 C174 60 148 64 112 74 C74 86 68 116 98 137 C132 160 139 181 118 208 C97 235 103 267 ${ROAD_EXIT.cover} 306`,
-    analytics: `M${ROAD_EXIT.cover} -8 C146 18 192 32 197 80 C201 125 190 160 197 198 C203 232 158 244 124 258 C106 265 105 288 ${ROAD_EXIT.analytics} 306`,
-    talents: `M${ROAD_EXIT.analytics} -8 C114 20 80 40 60 70 C40 100 52 130 90 150 C130 171 150 196 130 230 C116 254 118 280 ${ROAD_EXIT.talents} 306`,
-    closing: `M${ROAD_EXIT.talents} -8 C136 24 180 40 192 80 C202 116 170 140 140 160 C112 178 96 200 100 218 C102 226 110 230 120 232`,
+  // На стор.2 дорога складається з двох сегментів: вхід згори вливається у сцену з деревами
+  // (.insight-flow малює середню частину маршруту), а нижній сегмент продовжує її до виходу.
+  const paths: Record<string, string[]> = {
+    cover: [`M178 40 C174 60 148 64 112 74 C74 86 68 116 98 137 C132 160 139 181 118 208 C97 235 103 267 ${ROAD_EXIT.cover} 306`],
+    analytics: [
+      `M${ROAD_EXIT.cover} -8 C146 16 196 30 199 80 C202 124 188 152 176 172 C168 184 162 186 158 191`,
+      `M52 217 C28 224 8 232 7 254 C6 276 40 290 70 295 C88 298 100 299 ${ROAD_EXIT.analytics} 306`,
+    ],
+    talents: [`M${ROAD_EXIT.analytics} -8 C114 20 80 40 60 70 C40 100 52 130 90 150 C130 171 150 196 130 230 C116 254 118 280 ${ROAD_EXIT.talents} 306`],
+    closing: [`M${ROAD_EXIT.talents} -8 C136 24 180 40 192 80 C202 116 170 140 140 160 C112 178 96 200 100 218 C102 226 110 230 120 232`],
   };
   // Машинка просувається маршрутом: стор.1 — на старті шляху, стор.4 — припаркована біля фінішу.
-  // На стор.2 машинка вже є у сцені з деревами біля стежки — дублікат не потрібен.
+  // На стор.2 машинка їде в сцені з деревами (.insight-flow) — тут дублікат не потрібен.
   const cars = {
-    cover: roadCar(101, 250, .85, 10),
+    cover: roadCar(101, 250, .48, 10),
     analytics: "",
-    talents: roadCar(119, 278, .7, 15),
-    closing: roadCar(97, 226, .7, 2),
+    talents: roadCar(119, 278, .42, 15),
+    closing: roadCar(98, 227, .42, 2),
   };
   const markers = {
     cover: `<circle cx="178" cy="40" r="2.6" fill="${C.orange}"/>${chevrons(176, 47, 100)}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
@@ -136,10 +141,16 @@ function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): strin
     closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green)}`,
   };
 
+  const roadStrokes = paths[kind]
+    .map(
+      (d) => `<path d="${d}" fill="none" stroke="#FFF3D7" stroke-width="8.5" stroke-linecap="round" opacity=".78"/>
+    <path d="${d}" fill="none" stroke="${C.navySoft}" stroke-width="1.25" stroke-linecap="round" stroke-dasharray="1 5" opacity=".42"/>
+    <path d="${d}" fill="none" stroke="#FFFFFF" stroke-width=".7" stroke-linecap="round" stroke-dasharray="5 7" opacity=".62"/>`
+    )
+    .join("\n    ");
+
   return `<svg class="journey-road journey-${kind}" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="${paths[kind]}" fill="none" stroke="#FFF3D7" stroke-width="8.5" stroke-linecap="round" opacity=".78"/>
-    <path d="${paths[kind]}" fill="none" stroke="${C.navySoft}" stroke-width="1.25" stroke-linecap="round" stroke-dasharray="1 5" opacity=".42"/>
-    <path d="${paths[kind]}" fill="none" stroke="#FFFFFF" stroke-width=".7" stroke-linecap="round" stroke-dasharray="5 7" opacity=".62"/>
+    ${roadStrokes}
     ${markers[kind]}
     ${cars[kind]}
   </svg>`;
@@ -687,7 +698,6 @@ export function renderReportHtml(a: TemplateArgs): string {
         fill="none" stroke="#FFF3D7" stroke-width="24" stroke-linecap="round"/>
       <path d="M644 18 C 560 20, 518 48, 594 66 C 682 87, 620 124, 493 113 C 360 102, 335 136, 176 128"
         fill="none" stroke="${C.navySoft}" stroke-width="4.4" stroke-linecap="round" stroke-dasharray="2 14"/>
-      <path d="M188 115 l-24 15 26 12" fill="none" stroke="${C.orange}" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="644" cy="18" r="7.5" fill="${primaryColor}" stroke="#FFFFFF" stroke-width="2"/>
       <circle cx="596" cy="66" r="6" fill="${secondaryColor}" stroke="#FFFFFF" stroke-width="2"/>
       <circle cx="505" cy="113" r="4.5" fill="${C.yellow}"/>
@@ -718,17 +728,7 @@ export function renderReportHtml(a: TemplateArgs): string {
       <path d="M374 133 c11 -13 27 -11 37 0 c-13 6 -25 6 -37 0z" fill="${C.green}"/>
       <path d="M390 125 c4 9 4 17 0 25" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
       <path d="M474 46 l3.8 9 9 3.8 -9 3.8 -3.8 9 -3.8 -9 -9 -3.8 9 -3.8 z" fill="${C.yellow}"/>
-      <g transform="translate(610 61) rotate(9)">
-        <path d="M-48 6 h9 l12 -20 h46 l15 20 h9 c7 0 13 6 13 13 v16 h-112 v-16 c0 -7 6 -13 13 -13z"
-          fill="${C.orange}" stroke="${C.navy}" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M-22 -10 h34 l10 16 h-54z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width="2"/>
-        <rect x="-31" y="9" width="53" height="16" rx="4" fill="#FFFFFF"/>
-        <image href="${LOGO_SRC}" x="-47" y="1.8" width="88" height="30.5" preserveAspectRatio="xMidYMid meet"/>
-        <circle cx="-36" cy="36" r="9" fill="${C.navy}"/>
-        <circle cx="35" cy="36" r="9" fill="${C.navy}"/>
-        <circle cx="-36" cy="36" r="3.4" fill="#FFFFFF"/>
-        <circle cx="35" cy="36" r="3.4" fill="#FFFFFF"/>
-      </g>
+      ${roadCar(612, 74, 1.5, 9)}
       <path d="M231 133 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
       <path d="M536 92 c-8 -9 -19 -9 -27 0" fill="none" stroke="${C.line}" stroke-width="3" stroke-linecap="round"/>
       <circle cx="132" cy="128" r="33" fill="#FFF7D6" stroke="#FFE19A" stroke-width="3"/>
