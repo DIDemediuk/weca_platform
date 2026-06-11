@@ -61,6 +61,8 @@
     const [photo, setPhoto] = useState("");
     const [busy, setBusy] = useState(false);
     const types = props.types || Object.entries(typeNames).map(([value, label]) => ({ value, label }));
+    const [primaryType, setPrimaryType] = useState((types[0] && types[0].value) || "linguistic");
+    const selectedGuide = guideCards.find((item) => item.id === primaryType) || guideCards[0];
 
     return h(AppFrame, { mode: "form", activeTab: tab, setActiveTab: setTab },
       tab === "form" ? h("div", null,
@@ -92,7 +94,12 @@
             )
           ),
           h("label", null, "Домінуючий тип 1",
-            h("select", { name: "primaryType", required: true },
+            h("select", {
+              name: "primaryType",
+              required: true,
+              value: primaryType,
+              onChange: (event) => setPrimaryType(event.target.value),
+            },
               types.map((t) => h("option", { key: t.value, value: t.value }, t.label))
             )
           ),
@@ -110,6 +117,17 @@
               rows: 5,
               placeholder: "Опишіть момент, де проявився саме обраний талант: що дитина зробила, як поводилась, у чому була її сильна сторона.",
             })
+          ),
+          h("div", { className: "type-writing-hint wide" },
+            h("div", null,
+              h("strong", null, `Що вписати для типу “${selectedGuide.title}”`),
+              h("p", null, selectedGuide.notice)
+            ),
+            h("ul", null, selectedGuide.signals.map((signal) => h("li", { key: signal }, signal))),
+            h("div", { className: "hint-example" },
+              h("span", null, "Можна адаптувати:"),
+              h("p", null, selectedGuide.phrases[0][1])
+            )
           ),
           h("label", { className: "wide upload-box" }, "Фото дитини",
             h("input", {
