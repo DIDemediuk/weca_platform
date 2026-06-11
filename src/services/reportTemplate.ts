@@ -79,8 +79,9 @@ function roadCar(x: number, y: number, scale = 1, rotate = 0): string {
     <path d="M-13.2 -1 L-10 -8.5 H-3 V-1 z" fill="#E8F4FC" stroke="${C.navySoft}" stroke-width=".8"/>
     <path d="M-0.5 -1 V-8.5 H6.4 L10 -1 z" fill="#E8F4FC" stroke="${C.navySoft}" stroke-width=".8"/>
     <path d="M-28 14 V4 Q-28 1 -25 1 H20 Q26 1 28 6 V14 Q28 16 25.5 16 H-25.5 Q-28 16 -28 14 z" fill="${C.orange}" stroke="${C.navy}" stroke-width="1.3" stroke-linejoin="round"/>
+    <clipPath id="car-plate"><rect x="-15" y="3.5" width="28" height="10" rx="2"/></clipPath>
     <rect x="-15" y="3.5" width="28" height="10" rx="2" fill="#FFFFFF"/>
-    <image href="${LOGO_SRC}" x="-15" y="3.5" width="28" height="10" preserveAspectRatio="xMidYMid meet"/>
+    <image href="${LOGO_SRC}" x="-15.1" y="-5.6" width="28.1" height="28.1" preserveAspectRatio="xMidYMid meet" clip-path="url(#car-plate)"/>
     <rect x="26.2" y="4.5" width="2.2" height="3" rx="1" fill="${C.yellow}"/>
     <rect x="-28.3" y="4.5" width="2" height="3" rx="1" fill="#D9534F"/>
     <circle cx="-17" cy="16" r="5" fill="${C.navy}"/>
