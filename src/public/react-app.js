@@ -120,13 +120,20 @@
           ),
           h("div", { className: "type-writing-hint wide" },
             h("div", null,
-              h("strong", null, `Що вписати для типу “${selectedGuide.title}”`),
-              h("p", null, selectedGuide.notice)
+              h("strong", null, `Заготовка для тексту: “${selectedGuide.title}”`),
+              h("p", null, "Скопіюйте одну фразу або змішайте дві. Важливо додати конкретну ситуацію: де це було, що дитина зробила і як це допомогло команді.")
             ),
-            h("ul", null, selectedGuide.signals.map((signal) => h("li", { key: signal }, signal))),
-            h("div", { className: "hint-example" },
-              h("span", null, "Можна адаптувати:"),
-              h("p", null, selectedGuide.phrases[0][1])
+            h("div", { className: "hint-formula" },
+              h("span", null, "Формула"),
+              h("p", null, "Під час [активність] [Ім'я дитини] [що зробила/зробив]. Це показало, що дитина [сильна сторона саме цього типу].")
+            ),
+            h("div", { className: "hint-phrases" },
+              selectedGuide.phrases.map(([label, text]) =>
+                h("div", { className: "hint-example", key: label },
+                  h("span", null, label),
+                  h("p", null, text)
+                )
+              )
             )
           ),
           h("label", { className: "wide upload-box" }, "Фото дитини",
