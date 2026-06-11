@@ -105,12 +105,19 @@ function pennant(x: number, y: number, color: string): string {
   </g>`;
 }
 
-// Маленький вказівник напрямку: три шеврони вздовж дороги.
-function chevrons(x: number, y: number, angle: number): string {
-  return `<g transform="translate(${x} ${y}) rotate(${angle})" fill="none" stroke="${C.orange}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M0 0 l4.5 4.5 L0 9"/>
-    <path d="M7 0 l4.5 4.5 L7 9" opacity=".62"/>
-    <path d="M14 0 l4.5 4.5 L14 9" opacity=".32"/>
+// Гоночний шеврон: суцільна «галочка» вістрям за напрямком руху, не ширша за дорогу (8.5).
+function roadArrow(x: number, y: number, angle: number, opacity = 1): string {
+  return `<g transform="translate(${x} ${y}) rotate(${angle})" opacity="${opacity}">
+    <path d="M-3.7 -2.7 L0 0.7 L3.7 -2.7 L3.7 0.5 L0 3.9 L-3.7 0.5 z" fill="${C.orange}"/>
+  </g>`;
+}
+
+// Як розмітка на гоночній трасі: перший шеврон яскравий, далі поступово зникають.
+function startRoadArrows(): string {
+  return `<g>
+    ${roadArrow(177, 45, 108, 1)}
+    ${roadArrow(174, 51, 125, .6)}
+    ${roadArrow(168.5, 56, 145, .28)}
   </g>`;
 }
 
@@ -136,7 +143,7 @@ function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): strin
     closing: roadCar(98, 227, .42, 2),
   };
   const markers = {
-    cover: `<circle cx="178" cy="40" r="2.6" fill="${C.orange}"/>${chevrons(176, 47, 100)}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
+    cover: `<circle cx="178" cy="40" r="2.6" fill="${C.orange}"/>${startRoadArrows()}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
     analytics: `<circle cx="${ROAD_EXIT.cover}" cy="0" r="3" fill="${CHECKPOINT.cover}"/><circle cx="${ROAD_EXIT.analytics}" cy="297" r="3" fill="${CHECKPOINT.analytics}"/>`,
     talents: `<circle cx="${ROAD_EXIT.analytics}" cy="0" r="3" fill="${CHECKPOINT.analytics}"/><circle cx="${ROAD_EXIT.talents}" cy="297" r="3" fill="${CHECKPOINT.talents}"/>`,
     closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green)}`,
