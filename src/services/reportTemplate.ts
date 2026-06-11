@@ -69,6 +69,64 @@ function withName(text: string, name: string): string {
   return esc(text).split("{name}").join(esc(name));
 }
 
+function roadCar(x: number, y: number, scale = 1, rotate = 0): string {
+  return `<g transform="translate(${x} ${y}) rotate(${rotate}) scale(${scale})">
+    <path d="M-16 2 h4 l4 -8 h16 l5 8 h4 c3 0 5 2.5 5 5.5 v7 h-44 v-7 c0 -3 2 -5.5 5 -5.5z" fill="${C.orange}" stroke="${C.navy}" stroke-width="1.35" stroke-linejoin="round"/>
+    <path d="M-6 -4 h11 l4 6 h-17z" fill="#FFFFFF" stroke="${C.navySoft}" stroke-width=".9"/>
+    <rect x="-10" y="4" width="21" height="7" rx="2" fill="#FFFFFF"/>
+    <image href="${LOGO_SRC}" x="-15" y="1.2" width="31" height="11" preserveAspectRatio="xMidYMid meet"/>
+    <circle cx="-13" cy="15" r="3.4" fill="${C.navy}"/>
+    <circle cx="14" cy="15" r="3.4" fill="${C.navy}"/>
+    <circle cx="-13" cy="15" r="1.2" fill="#FFFFFF"/>
+    <circle cx="14" cy="15" r="1.2" fill="#FFFFFF"/>
+  </g>`;
+}
+
+// Координати стиків: дорога виходить знизу сторінки N і заходить зверху N+1 у ТІЙ САМІЙ точці x.
+const ROAD_EXIT = { cover: 132, analytics: 110, talents: 127 };
+const CHECKPOINT = { cover: C.yellow, analytics: C.sky, talents: C.green };
+
+function pennant(x: number, y: number, color: string, label: string): string {
+  return `<g transform="translate(${x} ${y})">
+    <line x1="0" y1="0" x2="0" y2="-17" stroke="${C.navy}" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M0 -17 L14 -13 L0 -9 z" fill="${color}"/>
+    <circle cx="0" cy="0" r="2.1" fill="${C.navy}"/>
+    <text x="4" y="-1" font-family="Trebuchet MS, Arial, sans-serif" font-size="6.4" font-weight="900" fill="${C.navy}" letter-spacing=".5">${label}</text>
+  </g>`;
+}
+
+function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): string {
+  // Старт на обкладинці, фініш на останній сторінці; між сторінками x-координати збігаються.
+  const paths = {
+    cover: `M178 40 C174 60 148 64 112 74 C74 86 68 116 98 137 C132 160 139 181 118 208 C97 235 103 267 ${ROAD_EXIT.cover} 306`,
+    analytics: `M${ROAD_EXIT.cover} -8 C146 18 192 32 197 80 C201 125 190 160 197 198 C203 232 158 244 124 258 C106 265 105 288 ${ROAD_EXIT.analytics} 306`,
+    talents: `M${ROAD_EXIT.analytics} -8 C114 20 80 40 60 70 C40 100 52 130 90 150 C130 171 150 196 130 230 C116 254 118 280 ${ROAD_EXIT.talents} 306`,
+    closing: `M${ROAD_EXIT.talents} -8 C136 24 180 40 192 80 C202 116 170 140 140 160 C112 178 96 200 100 218 C102 226 110 230 120 232`,
+  };
+  // Машинка просувається маршрутом: стор.1 — на старті шляху, стор.4 — припаркована біля фінішу.
+  // На стор.2 машинка вже є у сцені з деревами біля стежки — дублікат не потрібен.
+  const cars = {
+    cover: roadCar(101, 250, .85, 10),
+    analytics: "",
+    talents: roadCar(119, 278, .7, 15),
+    closing: roadCar(97, 226, .7, 2),
+  };
+  const markers = {
+    cover: `${pennant(178, 40, C.orange, "СТАРТ")}<circle cx="${ROAD_EXIT.cover}" cy="297" r="3" fill="${CHECKPOINT.cover}"/>`,
+    analytics: `<circle cx="${ROAD_EXIT.cover}" cy="0" r="3" fill="${CHECKPOINT.cover}"/><circle cx="${ROAD_EXIT.analytics}" cy="297" r="3" fill="${CHECKPOINT.analytics}"/>`,
+    talents: `<circle cx="${ROAD_EXIT.analytics}" cy="0" r="3" fill="${CHECKPOINT.analytics}"/><circle cx="${ROAD_EXIT.talents}" cy="297" r="3" fill="${CHECKPOINT.talents}"/>`,
+    closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green, "ФІНІШ")}`,
+  };
+
+  return `<svg class="journey-road journey-${kind}" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="${paths[kind]}" fill="none" stroke="#FFF3D7" stroke-width="8.5" stroke-linecap="round" opacity=".78"/>
+    <path d="${paths[kind]}" fill="none" stroke="${C.navySoft}" stroke-width="1.25" stroke-linecap="round" stroke-dasharray="1 5" opacity=".42"/>
+    <path d="${paths[kind]}" fill="none" stroke="#FFFFFF" stroke-width=".7" stroke-linecap="round" stroke-dasharray="5 7" opacity=".62"/>
+    ${markers[kind]}
+    ${cars[kind]}
+  </svg>`;
+}
+
 function primaryCard(c: IntelligenceContent, childName: string, bridge: string): string {
   return `<article class="talent-card">
     <div class="talent-number">01</div>
@@ -153,6 +211,15 @@ export function renderReportHtml(a: TemplateArgs): string {
     border-right: 14mm solid transparent;
   }
   .page > * { position: relative; }
+  .journey-road {
+    position: absolute;
+    inset: 0;
+    width: 210mm;
+    height: 297mm;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .page > :not(.journey-road) { z-index: 1; }
   .page:last-child { page-break-after: auto; }
   .closing-page {
     padding-bottom: 54mm;
@@ -566,6 +633,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </style></head><body>
 
 <section class="page cover-page">
+  ${journeyRoad("cover")}
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
@@ -587,6 +655,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </section>
 
 <section class="page analytics-page">
+  ${journeyRoad("analytics")}
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
@@ -658,6 +727,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </section>
 
 <section class="page talent-page">
+  ${journeyRoad("talents")}
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
@@ -671,6 +741,7 @@ export function renderReportHtml(a: TemplateArgs): string {
 </section>
 
 <section class="page closing-page">
+  ${journeyRoad("closing")}
   ${strip}
   <header class="header">
     <div class="logo"><img class="logo-img" src="${LOGO_SRC}" alt="WestCamp Kids"></div>
