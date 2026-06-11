@@ -119,20 +119,14 @@
             })
           ),
           h("div", { className: "type-writing-hint wide" },
-            h("div", null,
-              h("strong", null, `Заготовка для тексту: “${selectedGuide.title}”`),
-              h("p", null, "Скопіюйте одну фразу або змішайте дві. Важливо додати конкретну ситуацію: де це було, що дитина зробила і як це допомогло команді.")
-            ),
             h("div", { className: "hint-formula" },
               h("span", null, "Формула"),
-              h("p", null, "Під час [активність] [Ім'я дитини] [що зробила/зробив]. Це показало, що дитина [сильна сторона саме цього типу].")
+              h("p", null, "Де це було → що [Ім'я] зробив/зробила → що це показало.")
             ),
             h("div", { className: "hint-phrases" },
-              selectedGuide.phrases.map(([label, text]) =>
-                h("div", { className: "hint-example", key: label },
-                  h("span", null, label),
-                  h("p", null, text)
-                )
+              h("div", { className: "hint-example" },
+                h("span", null, `Приклад: ${selectedGuide.title}`),
+                h("p", null, selectedGuide.phrases[0][1])
               )
             )
           ),
@@ -238,21 +232,10 @@
       h("header", { className: "page-head" },
         h("div", null, h("p", { className: "eyebrow" }, "Підказки"), h("h1", null, "Карта талантів WestCamp Kids"))
       ),
-      h("div", { className: "method-strip" },
-        h("strong", null, "Як визначати тип"),
-        h("span", null, "1. Поведінка у дії"),
-        h("span", null, "2. Повтор у різних ситуаціях"),
-        h("span", null, "3. Добровільна роль"),
-        h("span", null, "4. Конкретний приклад")
-      ),
       h("section", { className: "guide-panel" },
         h("div", { className: "guide-summary" },
-          h("h3", null, "Узагальнене рішення"),
-          h("p", null, "Обирайте тип не за тим, куди дитина випадково прийшла, а за способом дії: як вона мислить, що бере на себе добровільно і що повторюється у квестах, майстер-класах, побуті та фінальному проєкті.")
-        ),
-        h("div", { className: "guide-fill" },
-          h("h3", null, "Підкладка для заповнення"),
-          h("p", null, "У поле “живий приклад” вставте 2-3 речення за формулою: де це було -> що дитина зробила -> що це показало про її сильну сторону. Замініть [Ім'я дитини] на ім'я.")
+          h("h3", null, "Два правила"),
+          h("p", null, "Тип — це те, що дитина робить добровільно і що повторюється у різних ситуаціях. Згадка — 2-3 речення: де це було → що дитина зробила → що це показало.")
         )
       ),
       h("section", { className: "talent-guide" },
