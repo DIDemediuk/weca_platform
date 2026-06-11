@@ -21,6 +21,17 @@ describe("weaveReport", () => {
     expect(out.talentBridge).toContain("капітанство");
   });
 
+  it("uses only the first name in generated prompt and fallback text", async () => {
+    const fullNameArgs = { ...args, childName: "Коваль Артем Олегович" };
+    const prompt = buildWeavePrompt({ ...fullNameArgs, apiKey: "key" });
+    const out = await weaveReport({ ...fullNameArgs, apiKey: "" });
+
+    expect(prompt).toContain("Дитина: Артем.");
+    expect(prompt).not.toContain("Коваль Артем Олегович");
+    expect(out.coverQuote).toContain("Артем");
+    expect(out.coverQuote).not.toContain("Коваль Артем Олегович");
+  });
+
   it("builds a prompt asking for JSON with two fields", () => {
     const prompt = buildWeavePrompt({ ...args, apiKey: "key" });
     expect(prompt).toContain("База знань для інтерпретації");

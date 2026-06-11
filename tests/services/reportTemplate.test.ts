@@ -80,6 +80,18 @@ describe("renderReportHtml", () => {
     expect(html).not.toContain("{name}");
     expect(html).toContain("Артем пізнає світ через рух");
   });
+  it("shows full child name on the cover but uses only first name in descriptions", () => {
+    const primary = byType("spatial");
+    const fullNameHtml = renderReportHtml({
+      report: { ...report, childName: "Коваль Артем Олегович" },
+      primary,
+      radarSvg: "<svg></svg>",
+    });
+
+    expect(fullNameHtml).toContain("<h1>Коваль Артем Олегович</h1>");
+    expect(fullNameHtml).toContain(primary.strengths.replaceAll("{name}", "Артем"));
+    expect(fullNameHtml).not.toContain(primary.strengths.replaceAll("{name}", "Коваль Артем Олегович"));
+  });
   it("renders the talent bridge on the primary talent page", () => {
     expect(html).toContain("Місток про Артема.");
   });

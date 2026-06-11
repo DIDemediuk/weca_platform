@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { esc } from "../web/html.js";
+import { childMentionName } from "../domain/childName.js";
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 import type { IntelligenceContent, Report } from "../domain/types.js";
 import { TYPE_COLORS } from "./typeColors.js";
@@ -122,6 +123,7 @@ export function renderReportHtml(a: TemplateArgs): string {
   const strip = talentStrip(r.primaryType, r.secondaryType);
   const primaryColor = TYPE_COLORS[r.primaryType];
   const secondaryColor = r.secondaryType ? TYPE_COLORS[r.secondaryType] : C.sky;
+  const mentionName = childMentionName(r.childName);
 
   return `<!doctype html><html lang="uk"><head><meta charset="utf-8">
 <style>
@@ -663,8 +665,8 @@ export function renderReportHtml(a: TemplateArgs): string {
   </header>
   <h2>Найяскравіші таланти дитини</h2>
   <div class="talents">
-    ${primaryCard(a.primary, r.childName, r.talentBridge)}
-    ${secondaryCard(secondary, r.childName)}
+    ${primaryCard(a.primary, mentionName, r.talentBridge)}
+    ${secondaryCard(secondary, mentionName)}
   </div>
 </section>
 

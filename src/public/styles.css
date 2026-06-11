@@ -389,6 +389,119 @@ th {
   margin-top: 16px;
 }
 
+.guide-panel {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.guide-summary,
+.guide-fill,
+.guide-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--soft-shadow);
+}
+
+.guide-summary,
+.guide-fill {
+  padding: 18px;
+}
+
+.guide-summary {
+  border-left: 5px solid var(--green);
+}
+
+.guide-fill {
+  border-left: 5px solid var(--orange);
+  background: #fffaf4;
+}
+
+.guide-panel p,
+.guide-section p,
+.phrase-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.talent-guide {
+  display: grid;
+  gap: 14px;
+}
+
+.guide-select {
+  max-width: 520px;
+}
+
+.guide-card {
+  padding: 22px;
+}
+
+.guide-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.guide-card-head h2 {
+  margin: 0;
+  color: var(--blue);
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.guide-card-head p {
+  margin: 5px 0 0;
+  color: var(--orange);
+  font-weight: 800;
+}
+
+.guide-card-head span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #eef7f4;
+  color: var(--green);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.guide-section {
+  margin-top: 14px;
+}
+
+.guide-section ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.phrase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.phrase-card {
+  min-height: 138px;
+  padding: 16px;
+  border: 1px solid #f0d7bd;
+  border-radius: 8px;
+  background: #fffaf4;
+}
+
+.phrase-card strong {
+  display: block;
+  color: #a84608;
+  margin-bottom: 8px;
+}
+
 @media (max-width: 860px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -426,8 +539,20 @@ th {
     padding: 18px;
   }
 
-  .form-grid, .content-layout, .info-grid {
+  .form-grid, .content-layout, .info-grid, .guide-panel, .phrase-grid {
     grid-template-columns: 1fr;
+  }
+
+  .guide-card {
+    padding: 18px;
+  }
+
+  .guide-card-head {
+    display: grid;
+  }
+
+  .guide-card-head span {
+    justify-self: flex-start;
   }
 
   .page-head, .toolbar {

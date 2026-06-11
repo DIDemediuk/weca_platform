@@ -1,4 +1,5 @@
 import { knowledgeSummary } from "../domain/intelligenceKnowledge.js";
+import { childMentionName } from "../domain/childName.js";
 import type { IntelligenceType } from "../domain/types.js";
 
 export interface WeaveArgs {
@@ -39,11 +40,12 @@ function bridgeContradictsPrimary(bridge: string, primary: IntelligenceType): bo
 }
 
 function fallback(a: WeaveArgs): WeaveResult {
+  const name = childMentionName(a.childName);
   const types = a.secondaryTitle ? `${a.primaryTitle} та ${a.secondaryTitle}` : a.primaryTitle;
   const primaryEssence = knowledgeSummary(a.primaryType).split("\n")[0].replace("Суть: ", "");
   return {
-    coverQuote: `Цього сезону ${a.childName} яскраво проявив(-ла) ${types}. Для нас це не сухий тест, а жива історія про те, як дитина обирає, пробує, взаємодіє і поступово розкривається в команді. ${primaryEssence} Саме тому нам запам'ятався момент: «${a.example.trim()}». У ньому добре видно сильну сторону ${a.childName}: не ідеальну картинку, а справжній прояв характеру, цікавості й власного способу мислити.`,
-    talentBridge: `«${a.example.trim()}» — саме в таких моментах ${a.childName} розкривається найяскравіше. Для нашої команди це живе підтвердження таланту, про який ідеться в цьому розділі.`,
+    coverQuote: `Цього сезону ${name} яскраво проявив(-ла) ${types}. Для нас це не сухий тест, а жива історія про те, як дитина обирає, пробує, взаємодіє і поступово розкривається в команді. ${primaryEssence} Саме тому нам запам'ятався момент: «${a.example.trim()}». У ньому добре видно сильну сторону ${name}: не ідеальну картинку, а справжній прояв характеру, цікавості й власного способу мислити.`,
+    talentBridge: `«${a.example.trim()}» — саме в таких моментах ${name} розкривається найяскравіше. Для нашої команди це живе підтвердження таланту, про який ідеться в цьому розділі.`,
   };
 }
 
@@ -57,10 +59,11 @@ function buildKnowledgeBlock(a: WeaveArgs): string {
 }
 
 export function buildWeavePrompt(a: WeaveArgs): string {
+  const name = childMentionName(a.childName);
   const types = a.secondaryTitle ? `${a.primaryTitle} і ${a.secondaryTitle}` : a.primaryTitle;
   return (
     `Ти пишеш теплі, щирі фрагменти дитячого звіту для батьків українською. ` +
-    `Дитина: ${a.childName}. Сильні сторони: ${types}. ` +
+    `Дитина: ${name}. Сильні сторони: ${types}. ` +
     `Дані від тім-ліда: "${a.example.trim()}". ` +
     `База знань для інтерпретації:\n${buildKnowledgeBlock(a)}\n\n` +
     `Методика табору: не дорослий тест, а м'яка аналітика з кількох джерел - ігровий стартовий вибір, майстер-класи, спостереження дня 3/6/9, вечірні рефлексії та фінальний добровільний вибір ролі. ` +
