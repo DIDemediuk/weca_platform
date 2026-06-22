@@ -1,6 +1,19 @@
 import type { DB } from "./index.js";
 import type { Report } from "../domain/types.js";
 
+export type ReportEventType = "created" | "downloaded";
+
+export interface ReportEvent {
+  id: number;
+  reportId: string;
+  childName: string;
+  shift: string;
+  primaryType: string;
+  secondaryType: string | null;
+  eventType: ReportEventType;
+  occurredAt: string;
+}
+
 interface Row {
   id: string; child_name: string; shift: string; primary_type: string;
   secondary_type: string | null; example: string; woven_example: string;
@@ -31,4 +44,34 @@ export function getReport(db: DB, id: string): Report | undefined {
 
 export function listReports(db: DB): Report[] {
   return (db.prepare(`SELECT * FROM reports ORDER BY created_at DESC`).all() as Row[]).map(toReport);
+}
+
+export function logReportEvent(db: DB, reportId: string, eventType: ReportEventType): void {
+  db.prepare(
+    `INSERT INTO report_events (report_id, event_type, occurred_at) VALUES (?, ?, ?)`
+  ).run(reportId, eventType, new Date().toISOString());
+}
+
+export function listReportEvents(db: DB): ReportEvent[] {
+  return (db.prepare(`
+    SELECT e.id, e.report_id, r.child_name, r.shift, r.primary_type, r.secondary_type,
+           e.event_type, e.occurred_at
+    FROM report_events e
+    JOIN reports r ON r.id = e.report_id
+    ORDER BY e.occurred_at DESC
+    LIMIT 200
+  `).all() as Array<{
+    id: number; report_id: string; child_name: string; shift: string;
+    primary_type: string; secondary_type: string | null;
+    event_type: string; occurred_at: string;
+  }>).map(row => ({
+    id: row.id,
+    reportId: row.report_id,
+    childName: row.child_name,
+    shift: row.shift,
+    primaryType: row.primary_type,
+    secondaryType: row.secondary_type,
+    eventType: row.event_type as ReportEventType,
+    occurredAt: row.occurred_at,
+  }));
 }

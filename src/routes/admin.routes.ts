@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import formbody from "@fastify/formbody";
 import { adminListPage, adminContentPage } from "../web/adminPages.js";
-import { listReports, getReport } from "../db/reports.repo.js";
+import { listReports, getReport, listReportEvents, logReportEvent } from "../db/reports.repo.js";
 import { listIntelligences, getIntelligence, updateIntelligence } from "../db/intelligences.repo.js";
 import { renderRadarSvg } from "../services/radar.js";
 import { renderReportHtml } from "../services/reportTemplate.js";
@@ -17,7 +17,7 @@ export async function adminRoutes(app: FastifyInstance) {
 
   app.get<{ Params: { secret: string } }>("/admin/:secret", async (req, reply) => {
     if (!guard(req.params.secret)) return reply.code(404).send("Not found");
-    return reply.type("text/html").send(adminListPage(cfg.adminSecret, listReports(db)));
+    return reply.type("text/html").send(adminListPage(cfg.adminSecret, listReports(db), listReportEvents(db)));
   });
 
   app.get<{ Params: { secret: string } }>("/admin/:secret/content", async (req, reply) => {
@@ -47,6 +47,7 @@ export async function adminRoutes(app: FastifyInstance) {
       if (!guard(req.params.secret)) return reply.code(404).send("Not found");
       const report = getReport(db, req.params.id);
       if (!report) return reply.code(404).send("Not found");
+      logReportEvent(db, report.id, "downloaded");
       const primary = getIntelligence(db, report.primaryType);
       const secondary = report.secondaryType ? getIntelligence(db, report.secondaryType) : undefined;
       const highlighted = [report.primaryType, report.secondaryType].filter(Boolean) as IntelligenceType[];

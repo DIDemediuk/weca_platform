@@ -25,4 +25,11 @@ CREATE TABLE IF NOT EXISTS reports (
   photo_path TEXT NOT NULL,
   created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS report_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  report_id TEXT NOT NULL REFERENCES reports(id),
+  event_type TEXT NOT NULL CHECK(event_type IN ('created','downloaded')),
+  occurred_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_report_events_report_id ON report_events(report_id);
 `;

@@ -1,6 +1,6 @@
 import type { DB } from "../db/index.js";
 import { getIntelligence } from "../db/intelligences.repo.js";
-import { insertReport } from "../db/reports.repo.js";
+import { insertReport, logReportEvent } from "../db/reports.repo.js";
 import { renderRadarSvg } from "./radar.js";
 import { renderReportHtml } from "./reportTemplate.js";
 import { weaveReport, type WeaveArgs, type WeaveResult } from "./ai.js";
@@ -59,6 +59,7 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
     createdAt: now().toISOString(),
   };
   insertReport(deps.db, report);
+  logReportEvent(deps.db, report.id, "created");
 
   const highlighted = [input.primaryType, input.secondaryType].filter(Boolean) as IntelligenceType[];
   const radarSvg = renderRadarSvg(highlighted);
