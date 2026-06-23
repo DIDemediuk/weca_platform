@@ -104,7 +104,7 @@ export async function weaveReport(a: WeaveArgs): Promise<WeaveResult> {
       },
       body: JSON.stringify({
         model: "deepseek-chat",
-        temperature: 0.55,        // нижче за 0.85 — менше "польоту" й вигаданих сцен, ближче до фактів
+        temperature: 0.65,        // нижче за 0.85 — менше "польоту" й вигаданих сцен, ближче до фактів
         frequency_penalty: 0.4,   // прибиває повторювані кліше ("яскраво проявив", "жива історія")
         max_tokens: 700,          // страховка від обірваного JSON і зайвої довжини
         response_format: { type: "json_object" },

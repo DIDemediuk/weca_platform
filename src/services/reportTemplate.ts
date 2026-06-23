@@ -105,6 +105,14 @@ function pennant(x: number, y: number, color: string): string {
   </g>`;
 }
 
+// Маленька придорожня ялинка для журнейної дороги (viewBox 210x297). (x,y) — основа стовбура.
+function roadTree(x: number, y: number, s = 1): string {
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <rect x="-1" y="2.4" width="2" height="3.4" rx=".8" fill="${C.navy}"/>
+    <path d="M0 -14 L3 -8 H1.5 L4 -3 H2.2 L5.4 3 H-5.4 L-2.2 -3 H-4 L-1.5 -8 H-3 Z" fill="${C.green}" stroke="${C.navySoft}" stroke-width=".6" stroke-linejoin="round"/>
+  </g>`;
+}
+
 function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): string {
   // Старт на обкладинці, фініш на останній сторінці; між сторінками x-координати збігаються.
   // На стор.2 дорога складається з двох сегментів: вхід згори вливається у сцену з деревами
@@ -132,6 +140,33 @@ function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): strin
     talents: `<circle cx="${ROAD_EXIT.analytics}" cy="0" r="3" fill="${CHECKPOINT.analytics}"/><circle cx="${ROAD_EXIT.talents}" cy="297" r="3" fill="${CHECKPOINT.talents}"/>`,
     closing: `<circle cx="${ROAD_EXIT.talents}" cy="0" r="3" fill="${CHECKPOINT.talents}"/>${pennant(120, 232, C.green)}`,
   };
+  // Ялинки вздовж дороги. Дорога — фоновий шар, тож на видимих ділянках (поля, верх/низ
+  // сторінки) ялинки видно, а під картками вони природно ховаються. Щоб не виглядало
+  // «рядком по лінійці»: різна відстань від дороги (частина відступає в поле), різні розміри
+  // й легкі групки замість рівного кроку.
+  const trees: Record<string, string> = {
+    cover: [
+      // верхній згин — розсип у відкритому куті над картками
+      roadTree(163, 51, .5), roadTree(148, 43, .64), roadTree(133, 56, .44),
+      roadTree(121, 47, .58), roadTree(110, 63, .42), roadTree(131, 85, .5),
+      // нижній спуск біля машинки — обабіч, різна глибина
+      roadTree(133, 205, .5), roadTree(124, 222, .62), roadTree(96, 217, .54),
+      roadTree(140, 247, .44), roadTree(89, 238, .52), roadTree(130, 268, .6),
+      roadTree(92, 272, .5), roadTree(141, 289, .46), roadTree(106, 297, .54),
+    ].join(""),
+    analytics: "",
+    talents: [
+      roadTree(138, 231, .5), roadTree(110, 239, .58), roadTree(133, 255, .44),
+      roadTree(106, 261, .62), roadTree(138, 278, .5), roadTree(103, 283, .54),
+      roadTree(133, 296, .46), roadTree(114, 302, .56),
+    ].join(""),
+    closing: [
+      // верхній правий клин над картками
+      roadTree(140, 37, .5), roadTree(170, 30, .6), roadTree(160, 41, .44), roadTree(186, 42, .56),
+      // біля фінішного прапорця
+      roadTree(134, 233, .5), roadTree(85, 235, .46),
+    ].join(""),
+  };
 
   const roadStrokes = paths[kind]
     .map(
@@ -143,6 +178,7 @@ function journeyRoad(kind: "cover" | "analytics" | "talents" | "closing"): strin
 
   return `<svg class="journey-road journey-${kind}" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     ${roadStrokes}
+    ${trees[kind]}
     ${markers[kind]}
     ${cars[kind]}
   </svg>`;
