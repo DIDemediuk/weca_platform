@@ -1,6 +1,7 @@
 import { esc } from "./html.js";
 import type { Report, IntelligenceContent } from "../domain/types.js";
 import type { ReportEvent } from "../db/reports.repo.js";
+import type { Quota } from "../db/quota.repo.js";
 
 function jsonScript(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
@@ -20,12 +21,34 @@ function shell(secret: string, title: string, props: Record<string, unknown>, fa
 </body></html>`;
 }
 
+function quotaSection(secret: string, q: Quota): string {
+  const status = !q.accessEnabled
+    ? "⛔ Доступ відключено"
+    : q.unlimited
+      ? "♾️ Безлімітне використання"
+      : `Залишилось генерацій: ${q.remaining}`;
+  const act = `/admin/${esc(secret)}/quota`;
+  return `
+    <h2 style="margin-top:2rem">Тарифний план</h2>
+    <p>${esc(status)}</p>
+    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="${q.unlimited ? "unlimited_off" : "unlimited_on"}"><button type="submit">${q.unlimited ? "Вимкнути безліміт" : "Увімкнути безліміт"}</button></form>
+    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="add"><input type="number" name="amount" value="1" min="1" style="width:4rem"><button type="submit">Додати спроби</button></form>
+    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="${q.accessEnabled ? "disable" : "enable"}"><button type="submit">${q.accessEnabled ? "Відключити доступ" : "Увімкнути доступ"}</button></form>
+    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="reset"><button type="submit">Скинути до 3 спроб</button></form>`;
+}
+
 const EVENT_LABEL: Record<string, string> = {
   created: "📝 Створено",
   downloaded: "⬇️ Завантажено",
 };
 
-export function adminListPage(secret: string, reports: Report[], events: ReportEvent[] = []): string {
+export function adminListPage(
+  secret: string,
+  reports: Report[],
+  events: ReportEvent[] = [],
+  quota?: Quota,
+  activeTab = "reports"
+): string {
   const reportRows = reports.map((r) =>
     `<tr>
       <td>${esc(r.childName)}</td>
@@ -63,10 +86,11 @@ export function adminListPage(secret: string, reports: Report[], events: ReportE
       <thead><tr><th>ПІБ дитини</th><th>Зміна</th><th>Типи</th><th>Дата та час</th><th>Подія</th></tr></thead>
       <tbody>${eventRows || `<tr><td colspan="5">Подій ще немає.</td></tr>`}</tbody>
     </table>
+    ${quota ? quotaSection(secret, quota) : ""}
   </section>
 </main>`;
 
-  return shell(secret, "Адмінка", { page: "admin", activeTab: "reports", reports, events }, fallback);
+  return shell(secret, "Адмінка", { page: "admin", activeTab, reports, events, quota }, fallback);
 }
 
 export function adminContentPage(secret: string, items: IntelligenceContent[]): string {

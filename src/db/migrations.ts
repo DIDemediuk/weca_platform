@@ -32,4 +32,11 @@ CREATE TABLE IF NOT EXISTS report_events (
   occurred_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_report_events_report_id ON report_events(report_id);
+CREATE TABLE IF NOT EXISTS usage_quota (
+  id INTEGER PRIMARY KEY CHECK(id = 1),
+  remaining INTEGER NOT NULL,
+  unlimited INTEGER NOT NULL DEFAULT 0,
+  access_enabled INTEGER NOT NULL DEFAULT 1
+);
+INSERT OR IGNORE INTO usage_quota (id, remaining, unlimited, access_enabled) VALUES (1, 3, 0, 1);
 `;

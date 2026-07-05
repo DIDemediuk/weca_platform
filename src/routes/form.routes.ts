@@ -3,9 +3,10 @@ import { randomUUID } from "node:crypto";
 import { mkdirSync, createWriteStream } from "node:fs";
 import { join, extname } from "node:path";
 import { pipeline } from "node:stream/promises";
-import { formPage } from "../web/formPage.js";
+import { formPage, quotaBlockReason } from "../web/formPage.js";
 import { reportInputSchema } from "../domain/validation.js";
 import { buildReport } from "../services/reportBuilder.js";
+import { getQuota, consumeAttempt } from "../db/quota.repo.js";
 
 export async function formRoutes(app: FastifyInstance) {
   const cfg = app.appConfig;
@@ -13,11 +14,16 @@ export async function formRoutes(app: FastifyInstance) {
 
   app.get<{ Params: { secret: string } }>("/f/:secret", async (req, reply) => {
     if (req.params.secret !== cfg.formSecret) return reply.code(404).send("Not found");
-    return reply.type("text/html").send(formPage(cfg.formSecret));
+    return reply.type("text/html").send(formPage(cfg.formSecret, undefined, getQuota(db)));
   });
 
   app.post<{ Params: { secret: string } }>("/f/:secret", async (req, reply) => {
     if (req.params.secret !== cfg.formSecret) return reply.code(404).send("Not found");
+
+    const quota = getQuota(db);
+    if (quotaBlockReason(quota)) {
+      return reply.code(403).type("text/html").send(formPage(cfg.formSecret, undefined, quota));
+    }
 
     const fields: Record<string, string> = {};
     let photoPath = "";
@@ -49,13 +55,14 @@ export async function formRoutes(app: FastifyInstance) {
 
     if (!parsed.success || !photoPath) {
       const msg = !photoPath ? "Додайте фото дитини." : "Перевірте поля форми.";
-      return reply.code(400).type("text/html").send(formPage(cfg.formSecret, msg));
+      return reply.code(400).type("text/html").send(formPage(cfg.formSecret, msg, quota));
     }
 
     const { report, pdf } = await buildReport(parsed.data, {
       db,
       deepseekApiKey: cfg.deepseekApiKey,
     });
+    consumeAttempt(db);
 
     const filename = `zvit-${report.childName}-zmina-${report.shift}.pdf`.replace(/\s+/g, "_");
     return reply

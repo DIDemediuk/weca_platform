@@ -36,20 +36,53 @@ describe("form routes", () => {
 
   it("generates a pdf on valid submit", async () => {
     const app = buildServer(cfg);
-    const form = new FormData();
-    form.set("childName", "Артем");
-    form.set("shift", "3");
-    form.set("primaryType", "kinesthetic");
-    form.set("secondaryType", "");
-    form.set("example", "Капітанство у квесті та перемога команди.");
-    form.set("photo", new Blob([Buffer.from([0xff, 0xd8, 0xff])], { type: "image/jpeg" }), "a.jpg");
-    const res = await app.inject({
-      method: "POST", url: "/f/S",
-      payload: form as unknown as undefined,
-    });
+    const res = await submitReport(app);
     expect(res.statusCode).toBe(200);
     expect(res.headers["content-type"]).toContain("application/pdf");
     expect(res.rawPayload.subarray(0, 4).toString("latin1")).toBe("%PDF");
     await app.close();
   });
+
+  it("allows 3 generations, then blocks with an upgrade message", async () => {
+    const app = buildServer(cfg);
+    for (let i = 0; i < 3; i++) {
+      expect((await submitReport(app)).statusCode).toBe(200);
+    }
+    const res = await submitReport(app);
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toContain("оновіть свій тарифний план");
+
+    const page = await app.inject({ method: "GET", url: "/f/S" });
+    expect(page.body).toContain("оновіть свій тарифний план");
+    await app.close();
+  });
+
+  it("shows a disabled-access message when access is off", async () => {
+    const app = buildServer(cfg);
+    app.db.prepare(`UPDATE usage_quota SET access_enabled = 0 WHERE id = 1`).run();
+    const res = await submitReport(app);
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toContain("Доступ до сервісу відключено");
+    await app.close();
+  });
+
+  it("does not consume attempts in unlimited mode", async () => {
+    const app = buildServer(cfg);
+    app.db.prepare(`UPDATE usage_quota SET unlimited = 1 WHERE id = 1`).run();
+    for (let i = 0; i < 4; i++) {
+      expect((await submitReport(app)).statusCode).toBe(200);
+    }
+    await app.close();
+  });
 });
+
+async function submitReport(app: ReturnType<typeof buildServer>) {
+  const form = new FormData();
+  form.set("childName", "Артем");
+  form.set("shift", "3");
+  form.set("primaryType", "kinesthetic");
+  form.set("secondaryType", "");
+  form.set("example", "Капітанство у квесті та перемога команди.");
+  form.set("photo", new Blob([Buffer.from([0xff, 0xd8, 0xff])], { type: "image/jpeg" }), "a.jpg");
+  return app.inject({ method: "POST", url: "/f/S", payload: form as unknown as undefined });
+}

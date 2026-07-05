@@ -2,6 +2,15 @@ import { describe, it, expect, vi } from "vitest";
 import { buildServer } from "../../src/server.js";
 import { insertReport } from "../../src/db/reports.repo.js";
 import { getIntelligence } from "../../src/db/intelligences.repo.js";
+import { getQuota } from "../../src/db/quota.repo.js";
+
+async function postQuota(app: ReturnType<typeof buildServer>, body: Record<string, string>) {
+  return app.inject({
+    method: "POST", url: "/admin/A/quota",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    payload: new URLSearchParams(body).toString(),
+  });
+}
 
 vi.mock("../../src/services/pdf.js", () => ({
   renderPdf: vi.fn(async () => Buffer.from("%PDF-1.4 fake")),
@@ -50,6 +59,42 @@ describe("admin routes", () => {
     });
     expect(res.statusCode).toBe(302);
     expect(getIntelligence(app.db, "musical").tagline).toBe("Оновлено");
+    await app.close();
+  });
+
+  it("manages the usage quota", async () => {
+    const app = buildServer(cfg);
+
+    expect((await postQuota(app, { action: "unlimited_on" })).statusCode).toBe(302);
+    expect(getQuota(app.db).unlimited).toBe(true);
+
+    expect((await postQuota(app, { action: "unlimited_off" })).statusCode).toBe(302);
+    expect(getQuota(app.db).unlimited).toBe(false);
+
+    expect((await postQuota(app, { action: "add", amount: "5" })).statusCode).toBe(302);
+    expect(getQuota(app.db).remaining).toBe(8);
+
+    expect((await postQuota(app, { action: "disable" })).statusCode).toBe(302);
+    expect(getQuota(app.db).accessEnabled).toBe(false);
+
+    expect((await postQuota(app, { action: "enable" })).statusCode).toBe(302);
+    expect(getQuota(app.db).accessEnabled).toBe(true);
+
+    expect((await postQuota(app, { action: "reset" })).statusCode).toBe(302);
+    expect(getQuota(app.db)).toEqual({ remaining: 3, unlimited: false, accessEnabled: true });
+
+    expect((await postQuota(app, { action: "bogus" })).statusCode).toBe(400);
+    await app.close();
+  });
+
+  it("rejects quota changes with wrong secret", async () => {
+    const app = buildServer(cfg);
+    const res = await app.inject({
+      method: "POST", url: "/admin/wrong/quota",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      payload: "action=reset",
+    });
+    expect(res.statusCode).toBe(404);
     await app.close();
   });
 });

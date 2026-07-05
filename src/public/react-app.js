@@ -63,6 +63,29 @@
     const types = props.types || Object.entries(typeNames).map(([value, label]) => ({ value, label }));
     const [primaryType, setPrimaryType] = useState((types[0] && types[0].value) || "linguistic");
     const selectedGuide = guideCards.find((item) => item.id === primaryType) || guideCards[0];
+    const quota = props.quota;
+    const attemptsPill = quota && !quota.unlimited && quota.accessEnabled
+      ? `Залишилось генерацій: ${quota.remaining}`
+      : "PDF";
+
+    if (props.blocked) {
+      return h(AppFrame, { mode: "form", activeTab: tab, setActiveTab: setTab },
+        tab === "form" ? h("div", null,
+          h("header", { className: "page-head" },
+            h("div", null,
+              h("p", { className: "eyebrow" }, "Форма тім-лідера"),
+              h("h1", null, "Новий звіт про дитину")
+            )
+          ),
+          h("section", { className: "guide-panel" },
+            h("div", { className: "guide-summary" },
+              h("h3", null, "Ліміт вичерпано"),
+              h("p", null, props.blocked)
+            )
+          )
+        ) : h(Guide)
+      );
+    }
 
     return h(AppFrame, { mode: "form", activeTab: tab, setActiveTab: setTab },
       tab === "form" ? h("div", null,
@@ -71,7 +94,7 @@
             h("p", { className: "eyebrow" }, "Форма тім-лідера"),
             h("h1", null, "Новий звіт про дитину")
           ),
-          h("span", { className: "status-pill" }, "PDF")
+          h("span", { className: "status-pill" }, attemptsPill)
         ),
         props.error ? h("div", { className: "error" }, props.error) : null,
         h("form", {
@@ -270,7 +293,7 @@
     return h(AppFrame, { mode: "admin", activeTab: tab, setActiveTab: setTab },
       tab === "reports" ? h(ReportsTab, { reports: props.reports || [], secret: props.secret }) : null,
       tab === "content" ? h(ContentTab, { items: props.content || [], secret: props.secret }) : null,
-      tab === "settings" ? h(SettingsTab, { secret: props.secret }) : null
+      tab === "settings" ? h(SettingsTab, { secret: props.secret, quota: props.quota }) : null
     );
   }
 
@@ -345,12 +368,46 @@
     );
   }
 
-  function SettingsTab({ secret }) {
+  function QuotaPanel({ secret, quota }) {
+    const [amount, setAmount] = useState(1);
+    if (!quota) return null;
+    const action = `/admin/${secret}/quota`;
+    const status = !quota.accessEnabled
+      ? "⛔ Доступ до форми відключено"
+      : quota.unlimited
+        ? "♾️ Безлімітне використання"
+        : `Залишилось генерацій: ${quota.remaining}`;
+
+    const hiddenForm = (actionValue, label, extra) =>
+      h("form", { method: "post", action, style: { display: "inline-block", marginRight: "0.5rem", marginTop: "0.5rem" } },
+        h("input", { type: "hidden", name: "action", value: actionValue }),
+        extra || null,
+        h("button", { className: "btn", type: "submit" }, label)
+      );
+
+    return h("article", null,
+      h("h3", null, "Тарифний план"),
+      h("p", null, status),
+      hiddenForm(quota.unlimited ? "unlimited_off" : "unlimited_on", quota.unlimited ? "Вимкнути безліміт" : "Увімкнути безліміт"),
+      hiddenForm("add", "Додати спроби",
+        h("input", {
+          type: "number", name: "amount", min: 1, value: amount,
+          onChange: (e) => setAmount(e.target.value),
+          style: { width: "4.5rem", marginRight: "0.4rem" },
+        })
+      ),
+      hiddenForm(quota.accessEnabled ? "disable" : "enable", quota.accessEnabled ? "Відключити доступ" : "Увімкнути доступ"),
+      hiddenForm("reset", "Скинути до 3 спроб")
+    );
+  }
+
+  function SettingsTab({ secret, quota }) {
     return h("div", null,
       h("header", { className: "page-head" },
         h("div", null, h("p", { className: "eyebrow" }, "Розширення"), h("h1", null, "Налаштування"))
       ),
       h("div", { className: "info-grid" },
+        h(QuotaPanel, { secret, quota }),
         h("article", null, h("h3", null, "Посилання форми"), h("p", null, `/f/${secret}`)),
         h("article", null, h("h3", null, "Майбутні модулі"), h("p", null, "Тут можна додати шаблони PDF, користувачів, статистику змін і налаштування бренду.")),
         h("article", null, h("h3", null, "Безпека"), h("p", null, "Для продакшену варто додати пароль або окремий вхід в адмінку."))
