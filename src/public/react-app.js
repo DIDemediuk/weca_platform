@@ -63,11 +63,6 @@
     const types = props.types || Object.entries(typeNames).map(([value, label]) => ({ value, label }));
     const [primaryType, setPrimaryType] = useState((types[0] && types[0].value) || "linguistic");
     const selectedGuide = guideCards.find((item) => item.id === primaryType) || guideCards[0];
-    const quota = props.quota;
-    const attemptsPill = quota && !quota.unlimited && quota.accessEnabled
-      ? `Залишилось генерацій: ${quota.remaining}`
-      : "PDF";
-
     if (props.blocked) {
       return h(AppFrame, { mode: "form", activeTab: tab, setActiveTab: setTab },
         tab === "form" ? h("div", null,
@@ -94,18 +89,44 @@
             h("p", { className: "eyebrow" }, "Форма тім-лідера"),
             h("h1", null, "Новий звіт про дитину")
           ),
-          h("span", { className: "status-pill" }, attemptsPill)
+          h("span", { className: "status-pill" }, "PDF")
         ),
         props.error ? h("div", { className: "error" }, props.error) : null,
         h("form", {
           className: "form-grid",
           method: "post",
           action: props.submitUrl,
-          target: "downloadFrame",
           encType: "multipart/form-data",
-          onSubmit: () => {
+          onSubmit: async (event) => {
+            event.preventDefault();
             setBusy(true);
-            window.setTimeout(() => window.location.reload(), 45000);
+            const data = new FormData(event.target);
+            try {
+              const res = await fetch(props.submitUrl, { method: "POST", body: data });
+              if (res.ok) {
+                const blob = await res.blob();
+                const disposition = res.headers.get("content-disposition") || "";
+                const match = disposition.match(/filename\*=UTF-8''([^;]+)/);
+                const filename = match ? decodeURIComponent(match[1]) : "zvit.pdf";
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+                window.location.reload();
+              } else {
+                const html = await res.text();
+                document.open();
+                document.write(html);
+                document.close();
+              }
+            } catch (err) {
+              setBusy(false);
+              window.alert("Не вдалося згенерувати звіт. Перевірте зʼєднання та спробуйте ще раз.");
+            }
           },
         },
           h("label", null, "ПІБ дитини", h("input", { name: "childName", required: true, maxLength: 80, placeholder: "Наприклад: Артем Коваль" })),
@@ -167,15 +188,7 @@
             photo ? h("img", { className: "photo-preview", src: photo, alt: "Превʼю фото" }) : h("span", null, "JPG або PNG до 12 MB")
           ),
           h("button", { className: "primary-action wide", type: "submit", disabled: busy }, busy ? "Генерується PDF..." : "Згенерувати PDF")
-        ),
-        h("iframe", {
-          name: "downloadFrame",
-          title: "PDF download",
-          style: { display: "none" },
-          onLoad: () => {
-            if (busy) window.setTimeout(() => window.location.reload(), 700);
-          },
-        })
+        )
       ) : h(Guide)
     );
   }
@@ -397,7 +410,7 @@
         })
       ),
       hiddenForm(quota.accessEnabled ? "disable" : "enable", quota.accessEnabled ? "Відключити доступ" : "Увімкнути доступ"),
-      hiddenForm("reset", "Скинути до 3 спроб")
+      hiddenForm("reset", "Скинути до 10 спроб")
     );
   }
 

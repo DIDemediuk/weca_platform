@@ -38,5 +38,5 @@ CREATE TABLE IF NOT EXISTS usage_quota (
   unlimited INTEGER NOT NULL DEFAULT 0,
   access_enabled INTEGER NOT NULL DEFAULT 1
 );
-INSERT OR IGNORE INTO usage_quota (id, remaining, unlimited, access_enabled) VALUES (1, 3, 0, 1);
+INSERT OR IGNORE INTO usage_quota (id, remaining, unlimited, access_enabled) VALUES (1, 10, 0, 1);
 `;

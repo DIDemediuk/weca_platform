@@ -34,7 +34,7 @@ function quotaSection(secret: string, q: Quota): string {
     <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="${q.unlimited ? "unlimited_off" : "unlimited_on"}"><button type="submit">${q.unlimited ? "Вимкнути безліміт" : "Увімкнути безліміт"}</button></form>
     <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="add"><input type="number" name="amount" value="1" min="1" style="width:4rem"><button type="submit">Додати спроби</button></form>
     <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="${q.accessEnabled ? "disable" : "enable"}"><button type="submit">${q.accessEnabled ? "Відключити доступ" : "Увімкнути доступ"}</button></form>
-    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="reset"><button type="submit">Скинути до 3 спроб</button></form>`;
+    <form method="post" action="${act}" style="display:inline"><input type="hidden" name="action" value="reset"><button type="submit">Скинути до 10 спроб</button></form>`;
 }
 
 const EVENT_LABEL: Record<string, string> = {

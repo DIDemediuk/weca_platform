@@ -72,7 +72,7 @@ describe("admin routes", () => {
     expect(getQuota(app.db).unlimited).toBe(false);
 
     expect((await postQuota(app, { action: "add", amount: "5" })).statusCode).toBe(302);
-    expect(getQuota(app.db).remaining).toBe(8);
+    expect(getQuota(app.db).remaining).toBe(15);
 
     expect((await postQuota(app, { action: "disable" })).statusCode).toBe(302);
     expect(getQuota(app.db).accessEnabled).toBe(false);
@@ -81,7 +81,7 @@ describe("admin routes", () => {
     expect(getQuota(app.db).accessEnabled).toBe(true);
 
     expect((await postQuota(app, { action: "reset" })).statusCode).toBe(302);
-    expect(getQuota(app.db)).toEqual({ remaining: 3, unlimited: false, accessEnabled: true });
+    expect(getQuota(app.db)).toEqual({ remaining: 10, unlimited: false, accessEnabled: true });
 
     expect((await postQuota(app, { action: "bogus" })).statusCode).toBe(400);
     await app.close();

@@ -43,9 +43,9 @@ describe("form routes", () => {
     await app.close();
   });
 
-  it("allows 3 generations, then blocks with an upgrade message", async () => {
+  it("allows 10 generations, then blocks with an upgrade message", async () => {
     const app = buildServer(cfg);
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 10; i++) {
       expect((await submitReport(app)).statusCode).toBe(200);
     }
     const res = await submitReport(app);

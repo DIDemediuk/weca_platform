@@ -1,6 +1,6 @@
 import type { DB } from "./index.js";
 
-export const DEFAULT_ATTEMPTS = 3;
+export const DEFAULT_ATTEMPTS = 10;
 
 export interface Quota {
   remaining: number;
@@ -41,7 +41,7 @@ export function setAccessEnabled(db: DB, on: boolean): void {
   db.prepare(`UPDATE usage_quota SET access_enabled = ? WHERE id = 1`).run(on ? 1 : 0);
 }
 
-/** Повне скидання: 3 спроби, безліміт вимкнено, доступ увімкнено. */
+/** Повне скидання: DEFAULT_ATTEMPTS спроб, безліміт вимкнено, доступ увімкнено. */
 export function resetQuota(db: DB): void {
   db.prepare(`UPDATE usage_quota SET remaining = ?, unlimited = 0, access_enabled = 1 WHERE id = 1`).run(DEFAULT_ATTEMPTS);
 }

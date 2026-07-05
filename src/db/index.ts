@@ -16,7 +16,23 @@ export function openDb(path: string): DB {
   ensureColumn(db, "reports", "talent_bridge", "TEXT NOT NULL DEFAULT ''");
   seedIntelligences(db);
   reapplySeedDefaults(db);
+  bumpLegacyQuotaDefault(db);
   return db;
+}
+
+const QUOTA_DEFAULT_BUMP_VERSION = 1;
+
+/**
+ * Старі БД отримали ліміт 3 до підняття дефолту до 10.
+ * Застосовується рівно один раз на файл БД (через PRAGMA user_version),
+ * інакше природне зменшення remaining до 3 через реальне використання
+ * знову й знову підкидало б лічильник при кожному рестарті сервера.
+ */
+export function bumpLegacyQuotaDefault(db: DB): void {
+  const version = db.pragma("user_version", { simple: true }) as number;
+  if (version >= QUOTA_DEFAULT_BUMP_VERSION) return;
+  db.prepare(`UPDATE usage_quota SET remaining = 10 WHERE id = 1 AND remaining = 3`).run();
+  db.pragma(`user_version = ${QUOTA_DEFAULT_BUMP_VERSION}`);
 }
 
 function ensureColumn(db: DB, table: string, column: string, ddl: string): void {
