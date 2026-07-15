@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { openDb } from "../../src/db/index.js";
-import { getReport } from "../../src/db/reports.repo.js";
-import { buildReport } from "../../src/services/reportBuilder.js";
+import { getReport, insertReport } from "../../src/db/reports.repo.js";
+import { buildReport, renderReportPdf } from "../../src/services/reportBuilder.js";
 import type { ReportInputParsed } from "../../src/domain/validation.js";
+import type { Report } from "../../src/domain/types.js";
 
 const input: ReportInputParsed = {
   childName: "Артем", shift: "3", primaryType: "kinesthetic",
@@ -35,5 +36,21 @@ describe("buildReport", () => {
       childName: "Артем", primaryTitle: expect.stringContaining("кінестетичний"),
     }));
     expect(render).toHaveBeenCalledWith(expect.stringContaining("Оживлений текст про Артема."));
+  });
+});
+
+describe("renderReportPdf", () => {
+  it("renders a pdf buffer for an existing report", async () => {
+    const db = openDb(":memory:");
+    const report: Report = {
+      id: "r1", childName: "Артем", shift: "3", primaryType: "musical",
+      secondaryType: undefined, example: "x", wovenExample: "y", talentBridge: "b",
+      photoPath: "/uploads/a.jpg", createdAt: "2026-06-08T10:00:00Z",
+    };
+    insertReport(db, report);
+    const render = vi.fn(async () => Buffer.from("%PDF-1.4 fake"));
+    const pdf = await renderReportPdf(db, report, { render, photoToSrc: (p) => `file://${p}` });
+    expect(pdf.subarray(0, 4).toString("latin1")).toBe("%PDF");
+    expect(render).toHaveBeenCalled();
   });
 });

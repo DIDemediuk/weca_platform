@@ -2,12 +2,9 @@ import type { FastifyInstance } from "fastify";
 import formbody from "@fastify/formbody";
 import { adminListPage, adminContentPage } from "../web/adminPages.js";
 import { listReports, getReport, listReportEvents, logReportEvent } from "../db/reports.repo.js";
-import { listIntelligences, getIntelligence, updateIntelligence } from "../db/intelligences.repo.js";
+import { listIntelligences, updateIntelligence } from "../db/intelligences.repo.js";
 import { getQuota, setUnlimited, addAttempts, setAccessEnabled, resetQuota } from "../db/quota.repo.js";
-import { renderRadarSvg } from "../services/radar.js";
-import { renderReportHtml } from "../services/reportTemplate.js";
-import { renderPdf, downscalePhoto } from "../services/pdf.js";
-import { imageFileToDataUri } from "../services/imageSrc.js";
+import { renderReportPdf } from "../services/reportBuilder.js";
 import { INTELLIGENCE_TYPES, type IntelligenceType } from "../domain/types.js";
 
 export async function adminRoutes(app: FastifyInstance) {
@@ -68,15 +65,7 @@ export async function adminRoutes(app: FastifyInstance) {
       const report = getReport(db, req.params.id);
       if (!report) return reply.code(404).send("Not found");
       logReportEvent(db, report.id, "downloaded");
-      const primary = getIntelligence(db, report.primaryType);
-      const secondary = report.secondaryType ? getIntelligence(db, report.secondaryType) : undefined;
-      const highlighted = [report.primaryType, report.secondaryType].filter(Boolean) as IntelligenceType[];
-      const photoSrc = await downscalePhoto(await imageFileToDataUri(report.photoPath));
-      const html = renderReportHtml({
-        report: { ...report, photoPath: photoSrc },
-        primary, secondary, radarSvg: renderRadarSvg(highlighted),
-      });
-      const pdf = await renderPdf(html);
+      const pdf = await renderReportPdf(db, report);
       return reply.type("application/pdf").send(pdf);
     }
   );

@@ -73,3 +73,25 @@ export async function buildReport(input: ReportInputParsed, deps: BuildDeps): Pr
   const pdf = await render(html);
   return { report, pdf };
 }
+
+export interface RenderPdfDeps {
+  render?: (html: string) => Promise<Buffer>;
+  photoToSrc?: (photoPath: string) => string | Promise<string>;
+}
+
+export async function renderReportPdf(db: DB, report: Report, deps: RenderPdfDeps = {}): Promise<Buffer> {
+  const render = deps.render ?? renderPdf;
+  const photoToSrc = deps.photoToSrc ?? (async (p: string) => downscalePhoto(await imageFileToDataUri(p)));
+
+  const primary = getIntelligence(db, report.primaryType);
+  const secondary = report.secondaryType ? getIntelligence(db, report.secondaryType) : undefined;
+  const highlighted = [report.primaryType, report.secondaryType].filter(Boolean) as IntelligenceType[];
+  const photoSrc = await photoToSrc(report.photoPath);
+  const html = renderReportHtml({
+    report: { ...report, photoPath: photoSrc },
+    primary,
+    secondary,
+    radarSvg: renderRadarSvg(highlighted),
+  });
+  return render(html);
+}
