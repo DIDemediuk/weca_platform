@@ -123,6 +123,18 @@ describe("form routes", () => {
     expect(events.length).toBe(0);
     await app.close();
   });
+
+  it("includes reports in the form page props for the archive tab", async () => {
+    const app = buildServer(cfg);
+    insertReport(app.db, {
+      id: "r1", childName: "Артем", shift: "3", primaryType: "musical",
+      secondaryType: undefined, example: "x", wovenExample: "y", talentBridge: "b",
+      photoPath: "/uploads/a.jpg", createdAt: "2026-06-08T10:00:00Z",
+    });
+    const res = await app.inject({ method: "GET", url: "/f/S" });
+    expect(res.body).toContain('"childName":"Артем"');
+    await app.close();
+  });
 });
 
 async function submitReport(app: ReturnType<typeof buildServer>) {

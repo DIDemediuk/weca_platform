@@ -7,7 +7,7 @@ import { formPage, quotaBlockReason } from "../web/formPage.js";
 import { reportInputSchema } from "../domain/validation.js";
 import { buildReport, renderReportPdf } from "../services/reportBuilder.js";
 import { getQuota, consumeAttempt } from "../db/quota.repo.js";
-import { getReport } from "../db/reports.repo.js";
+import { getReport, listReports } from "../db/reports.repo.js";
 
 export async function formRoutes(app: FastifyInstance) {
   const cfg = app.appConfig;
@@ -15,7 +15,7 @@ export async function formRoutes(app: FastifyInstance) {
 
   app.get<{ Params: { secret: string } }>("/f/:secret", async (req, reply) => {
     if (req.params.secret !== cfg.formSecret) return reply.code(404).send("Not found");
-    return reply.type("text/html").send(formPage(cfg.formSecret, undefined, getQuota(db)));
+    return reply.type("text/html").send(formPage(cfg.formSecret, undefined, getQuota(db), listReports(db)));
   });
 
   app.post<{ Params: { secret: string } }>("/f/:secret", async (req, reply) => {
@@ -23,7 +23,7 @@ export async function formRoutes(app: FastifyInstance) {
 
     const quota = getQuota(db);
     if (quotaBlockReason(quota)) {
-      return reply.code(403).type("text/html").send(formPage(cfg.formSecret, undefined, quota));
+      return reply.code(403).type("text/html").send(formPage(cfg.formSecret, undefined, quota, listReports(db)));
     }
 
     const fields: Record<string, string> = {};
@@ -56,7 +56,7 @@ export async function formRoutes(app: FastifyInstance) {
 
     if (!parsed.success || !photoPath) {
       const msg = !photoPath ? "Додайте фото дитини." : "Перевірте поля форми.";
-      return reply.code(400).type("text/html").send(formPage(cfg.formSecret, msg, quota));
+      return reply.code(400).type("text/html").send(formPage(cfg.formSecret, msg, quota, listReports(db)));
     }
 
     const { report, pdf } = await buildReport(parsed.data, {

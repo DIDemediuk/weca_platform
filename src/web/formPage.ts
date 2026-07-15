@@ -1,5 +1,6 @@
 import { esc } from "./html.js";
 import type { Quota } from "../db/quota.repo.js";
+import type { Report } from "../domain/types.js";
 
 export const LIMIT_REACHED_MESSAGE =
   "Раді, що вам сподобалась робота сервісу! Ви використали всі доступні генерації звітів. Для продовження оновіть свій тарифний план.";
@@ -29,7 +30,7 @@ function jsonScript(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
-export function formPage(secret: string, error?: string, quota?: Quota): string {
+export function formPage(secret: string, error?: string, quota?: Quota, reports: Report[] = []): string {
   const blocked = quota ? quotaBlockReason(quota) : undefined;
   const props = {
     page: "form",
@@ -40,6 +41,7 @@ export function formPage(secret: string, error?: string, quota?: Quota): string 
     submitUrl: `/f/${secret}`,
     quota,
     blocked,
+    reports,
   };
   const formOrBlocked = blocked
     ? `<div class="error">${esc(blocked)}</div>`
@@ -55,7 +57,7 @@ export function formPage(secret: string, error?: string, quota?: Quota): string 
 
   const fallback = `<main class="app-shell"><aside class="sidebar">
 <div class="brand"><img class="brand-logo" src="/static/brand/westcamp-kids-logo.png" alt="WestCamp Kids"><div><strong>WestCamp Kids</strong><small>Gardner reports</small></div></div>
-<nav class="tabs"><button class="tab active" type="button">Новий звіт</button><button class="tab" type="button">Підказки</button></nav>
+<nav class="tabs"><button class="tab active" type="button">Новий звіт</button><button class="tab" type="button">Архів</button><button class="tab" type="button">Підказки</button></nav>
 </aside><section class="workspace"><header class="page-head"><div><p class="eyebrow">Форма тім-лідера</p><h1>Новий звіт</h1></div></header>
 ${error && !blocked ? `<div class="error">${esc(error)}</div>` : ""}
 ${formOrBlocked}</section></main>`;
