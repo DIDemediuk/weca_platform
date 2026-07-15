@@ -26,6 +26,7 @@
         ]
       : [
           ["form", "Новий звіт"],
+          ["archive", "Архів"],
           ["guide", "Підказки"],
         ];
 
@@ -78,7 +79,7 @@
               h("p", null, props.blocked)
             )
           )
-        ) : h(Guide)
+        ) : tab === "archive" ? h(ArchiveTab, { reports: props.reports || [], secret: props.secret }) : h(Guide)
       );
     }
 
@@ -189,7 +190,42 @@
           ),
           h("button", { className: "primary-action wide", type: "submit", disabled: busy }, busy ? "Генерується PDF..." : "Згенерувати PDF")
         )
-      ) : h(Guide)
+      ) : tab === "archive" ? h(ArchiveTab, { reports: props.reports || [], secret: props.secret }) : h(Guide)
+    );
+  }
+
+  function ArchiveTab({ reports, secret }) {
+    const [query, setQuery] = useState("");
+    const filtered = useMemo(() => {
+      const q = query.trim().toLowerCase();
+      if (!q) return reports;
+      return reports.filter((r) => [r.childName, r.shift, r.primaryType, r.secondaryType].filter(Boolean).join(" ").toLowerCase().includes(q));
+    }, [reports, query]);
+
+    return h("div", null,
+      h("header", { className: "page-head" },
+        h("div", null, h("p", { className: "eyebrow" }, "Архів"), h("h1", null, "Раніше згенеровані звіти"))
+      ),
+      h("div", { className: "toolbar" },
+        h("input", { value: query, onChange: (e) => setQuery(e.target.value), placeholder: "Пошук за дитиною, зміною або типом" }),
+        h("span", null, `${filtered.length} з ${reports.length}`)
+      ),
+      h("div", { className: "table-wrap" },
+        h("table", null,
+          h("thead", null, h("tr", null, h("th", null, "Дитина"), h("th", null, "Зміна"), h("th", null, "Типи"), h("th", null, "Дата"), h("th", null, ""))),
+          h("tbody", null,
+            filtered.length ? filtered.map((r) =>
+              h("tr", { key: r.id },
+                h("td", null, r.childName),
+                h("td", null, r.shift),
+                h("td", null, h("span", { className: "type-chip" }, typeNames[r.primaryType] || r.primaryType), r.secondaryType ? h("span", { className: "type-chip muted-chip" }, typeNames[r.secondaryType] || r.secondaryType) : null),
+                h("td", null, String(r.createdAt || "").slice(0, 16).replace("T", " ")),
+                h("td", null, h("a", { className: "btn", href: `/f/${secret}/report/${r.id}.pdf` }, "PDF"))
+              )
+            ) : h("tr", null, h("td", { colSpan: 5 }, "Поки немає звітів."))
+          )
+        )
+      )
     );
   }
 
