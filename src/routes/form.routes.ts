@@ -5,8 +5,9 @@ import { join, extname } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { formPage, quotaBlockReason } from "../web/formPage.js";
 import { reportInputSchema } from "../domain/validation.js";
-import { buildReport } from "../services/reportBuilder.js";
+import { buildReport, renderReportPdf } from "../services/reportBuilder.js";
 import { getQuota, consumeAttempt } from "../db/quota.repo.js";
+import { getReport } from "../db/reports.repo.js";
 
 export async function formRoutes(app: FastifyInstance) {
   const cfg = app.appConfig;
@@ -70,4 +71,15 @@ export async function formRoutes(app: FastifyInstance) {
       .header("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`)
       .send(pdf);
   });
+
+  app.get<{ Params: { secret: string; id: string } }>(
+    "/f/:secret/report/:id.pdf",
+    async (req, reply) => {
+      if (req.params.secret !== cfg.formSecret) return reply.code(404).send("Not found");
+      const report = getReport(db, req.params.id);
+      if (!report) return reply.code(404).send("Not found");
+      const pdf = await renderReportPdf(db, report);
+      return reply.type("application/pdf").send(pdf);
+    }
+  );
 }
